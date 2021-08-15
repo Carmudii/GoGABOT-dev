@@ -1,5 +1,6 @@
-#include "server.h"
 #include <iostream>
+#include <ncurses.h>
+#include "server.h"
 #include "events.h"
 #include "gt.hpp"
 #include "proton/hash.hpp"
@@ -7,39 +8,41 @@
 #include "utils.h"
 
 using namespace std;
+std::vector<server::Item> server::inventory;
+std::vector<string> server::playerName;
+std::mutex server::mtx;
+std::condition_variable server::cv;
 
-void server::EventHandle()
+void server::eventHandle()
 {
     ENetEvent event;
     while (enet_host_service(m_server_host, &event, 0) > 0)
     {
         m_server_peer = event.peer;
-        PRINTS("ENET EVENT: %d\n", event.type);
         switch (event.type)
         {
         case ENET_EVENT_TYPE_CONNECT:
         {
-            PRINTS("Client was connected!\n");
+            this->server_status = SERVER_CONNECTED;
         }
         break;
         case ENET_EVENT_TYPE_RECEIVE:
         {
             int packet_type = get_packet_type(event.packet);
-            PRINTS("PACKET TYPE: %d\n", packet_type);
             switch (packet_type)
             {
             case NET_MESSAGE_SERVER_LOGIN_REQUEST:
-                events::out::onLoginRequest("PunchBoard1212", "123456Aa!");
+                events::send::onLoginRequest();
                 return;
             case NET_MESSAGE_GENERIC_TEXT:
-                if (events::out::genericText(utils::get_text(event.packet)))
+                if (events::send::onGenericText(utils::getText(event.packet)))
                 {
                     enet_packet_destroy(event.packet);
                     return;
                 }
                 break;
             case NET_MESSAGE_GAME_MESSAGE:
-                if (events::out::gameMessage(utils::get_text(event.packet)))
+                if (events::send::onGameMessage(utils::getText(event.packet)))
                 {
                     enet_packet_destroy(event.packet);
                     return;
@@ -47,27 +50,47 @@ void server::EventHandle()
                 break;
             case NET_MESSAGE_GAME_PACKET:
             {
-                auto packet = utils::get_struct(event.packet);
+                auto packet = utils::getStruct(event.packet);
                 if (!packet)
                     break;
                 switch (packet->m_type)
                 {
                 case PACKET_STATE:
-                    if (events::out::state(packet))
+                    if (events::send::onState(packet))
                     {
                         enet_packet_destroy(event.packet);
                         return;
                     }
                     break;
                 case PACKET_CALL_FUNCTION:
-                    if (events::out::variantList(packet))
+                    if (events::send::variantList(packet))
                     {
                         enet_packet_destroy(event.packet);
                         return;
                     }
                     break;
                 case PACKET_PING_REQUEST:
-                    if (events::out::pingReply(packet))
+                    if (events::send::onPingReply(packet))
+                    {
+                        enet_packet_destroy(event.packet);
+                        return;
+                    }
+                    break;
+                case PACKET_SEND_INVENTORY_STATE:
+                {
+                    server::inventory.clear();
+                    auto extended_ptr = utils::get_extended(packet);
+                    inventory.resize(*reinterpret_cast<short *>(extended_ptr + 9));
+                    memcpy(inventory.data(), extended_ptr + 11, server::inventory.capacity() * sizeof(Item));
+                    //for (Item& item : inventory) {
+                    //    std::cout << "Id: "<< (int)item.id << std::endl;
+                    //    std::cout << "Count: "<< (int)item.count << std::endl;
+                    //    std::cout << "type: "<< (int)item.type << std::endl;
+                    //}
+                }
+                break;
+                case PACKET_SEND_MAP_DATA:
+                    if (events::send::onSendMapData(packet))
                     {
                         enet_packet_destroy(event.packet);
                         return;
@@ -75,7 +98,7 @@ void server::EventHandle()
                     break;
                 case PACKET_DISCONNECT:
                 {
-                    PRINTS("unhandle case!");
+                    break;
                 }
                 break;
                 case PACKET_APP_INTEGRITY_FAIL:
@@ -83,21 +106,21 @@ void server::EventHandle()
                         return;
                     break;
                 default:
-                    PRINTS("gamepacket type: %d\n", packet->m_type);
+                    // PRINTS("gamepacket type: %d\n", packet->m_type);
+                    break;
                 }
             }
             break;
             case NET_MESSAGE_TRACK:
             {
-                //track one should never be used, but its not bad to have it in case.
-                events::out::onPlayerEnterGame();
+                events::send::onPlayerEnterGame();
                 return;
             }
             break;
             case NET_MESSAGE_CLIENT_LOG_RESPONSE:
                 return;
             default:
-                PRINTS("Got unknown packet of type %d.\n", packet_type);
+                // PRINTS("Got unknown packet of type %d.\n", packet_type);
                 break;
             }
 
@@ -117,10 +140,11 @@ void server::EventHandle()
                 gt::connecting = false;
                 exit(EXIT_FAILURE);
             }
+            this->server_status = SERVER_DISCONNECT;
         }
         break;
         default:
-            PRINTS("UNHANDLED %d\n", event.type);
+            // PRINTS("UNHANDLED %d\n", event.type);
             break;
         }
     }
@@ -130,6 +154,7 @@ void server::quit()
 {
     gt::in_game = false;
     this->disconnect(true);
+    gt::is_exit = true;
 }
 
 bool server::start_client()
@@ -138,15 +163,17 @@ bool server::start_client()
     m_server_host->usingNewPacket = true;
     if (!m_server_host)
     {
-        PRINTC("failed to start the client\n");
+        // PRINTD("failed to start the client\n");
+        this->server_status = SERVER_FAILED;
         return false;
     }
     m_server_host->checksum = enet_crc32;
     auto code = enet_host_compress_with_range_coder(m_server_host);
     if (code != 0)
-        PRINTC("enet host compressing failed\n");
+        // PRINTD("enet host compressing failed\n");
+    this->server_status = SERVER_FAILED;
     enet_host_flush(m_server_host);
-    PRINTC("Started enet client\n");
+    // PRINTD("Started enet client\n");
     return true;
 }
 
@@ -154,13 +181,16 @@ void server::redirect_server(variantlist_t &varlist)
 {
     this->disconnect(false);
     m_port = varlist[1].get_uint32();
-    m_token = varlist[2].get_uint32();
     m_user = varlist[3].get_uint32();
     auto str = varlist[4].get_string();
+    if (varlist[2].get_uint32() != -1)
+    {
+        m_token = varlist[2].get_uint32();
+    }
 
     auto doorid = str.substr(str.find("|"));
     m_server = str.erase(str.find("|")); //remove | and doorid from end
-    PRINTC("port: %d token %d user %d server %s doorid %s\n", m_port, m_token, m_user, m_server.c_str(), doorid.c_str());
+    // PRINTD("port: %d token %d user %d server %s doorid %s\n", m_port, m_token, m_user, m_server.c_str(), doorid.c_str());
 
     gt::connecting = true;
     if (m_server_host)
@@ -194,27 +224,44 @@ void server::disconnect(bool reset)
 
 bool server::connect()
 {
-    PRINTS("Connecting to server.\n");
+    // PRINTS("Connecting to server.\n");
     ENetAddress address;
     enet_address_set_host(&address, m_server.c_str());
     address.port = m_port;
-    PRINTS("port is %d and server is %s\n", m_port, m_server.c_str());
+    // PRINTS("port is %d and server is %s\n", m_port, m_server.c_str());
     if (!this->start_client())
     {
-        PRINTS("Failed to setup client when trying to connect to server!\n");
+        this->server_status = SERVER_FAILED;
+        // PRINTS("Failed to setup client when trying to connect to server!\n");
         return false;
     }
     m_server_peer = enet_host_connect(m_server_host, &address, 2, 0);
     if (!m_server_peer)
     {
-        PRINTS("Failed to connect to real server.\n");
+        this->server_status = SERVER_FAILED;
+        // PRINTS("Failed to connect to real server.\n");
         return false;
     }
     return true;
 }
 
-void server::send(int32_t type, uint8_t *data, int32_t len)
+string server::getServerStatus()
 {
+    switch (this->server_status)
+    {
+    case SERVER_CONNECTED:
+        return "OK!";
+    case SERVER_DISCONNECT:
+        return "DC!";
+    case SERVER_FAILED:
+        return "FAILED!";
+    }
+    return "...";
+}
+
+void server::send(int32_t type, gameupdatepacket_t *data, int32_t len)
+{
+    std::lock_guard<std::mutex> lock(this->mtx);
     auto peer = m_server_peer;
     auto host = m_server_host;
 
@@ -227,14 +274,15 @@ void server::send(int32_t type, uint8_t *data, int32_t len)
         memcpy(&game_packet->m_data, data, len);
 
     memset(&game_packet->m_data + len, 0, 1);
-    int code = enet_peer_send(peer, 0, packet);
-    if (code != 0)
-        PRINTS("Error sending packet! code: %d\n", code);
-    enet_host_flush(host);
+    enet_peer_send(peer, 0, packet);
+    // if (code != 0)
+    //     PRINTS("Error sending packet! code: %d\n", code);
+    // enet_host_flush(host);
 }
 
 void server::send(variantlist_t &list, int32_t netid, int32_t delay)
 {
+    std::lock_guard<std::mutex> lock(this->mtx);
     auto peer = m_server_peer;
     auto host = m_server_host;
 
@@ -272,6 +320,7 @@ void server::send(variantlist_t &list, int32_t netid, int32_t delay)
 
 void server::send(std::string text, int32_t type)
 {
+    std::lock_guard<std::mutex> lock(this->mtx);
     auto peer = m_server_peer;
     auto host = m_server_host;
 
@@ -283,8 +332,13 @@ void server::send(std::string text, int32_t type)
     memcpy(&game_packet->m_data, text.c_str(), text.length());
 
     memset(&game_packet->m_data + text.length(), 0, 1);
-    int code = enet_peer_send(peer, 0, packet);
-    if (code != 0)
-        PRINTS("Error sending packet! code: %d\n", code);
+    enet_peer_send(peer, 0, packet);
+    // if (code != 0)
+    //     PRINTS("Error sending packet! code: %d\n", code);
     enet_host_flush(host);
+}
+
+void server::setTargetWorld(string worldName)
+{
+    g_server->send("action|join_request\nname|" + worldName, 3);
 }

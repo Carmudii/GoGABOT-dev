@@ -1,8 +1,10 @@
 #pragma once
+
 #include <stdint.h>
 
 #pragma pack(push, 1)
-struct gameupdatepacket_t {
+struct gameupdatepacket_t
+{
 	uint8_t m_type;
 	uint8_t m_netid;
 	uint8_t m_jump_amount;
@@ -22,12 +24,14 @@ struct gameupdatepacket_t {
 	uint32_t m_data_size;
 	uint32_t m_data;
 };
-typedef struct gametankpacket_t {
+typedef struct gametankpacket_t
+{
 	int32_t m_type;
 	char m_data;
 } gametextpacket_t;
 #pragma pack(pop)
-enum {
+enum
+{
 	PACKET_STATE = 0,
 	PACKET_CALL_FUNCTION,
 	PACKET_UPDATE_STATUS,
@@ -68,7 +72,8 @@ enum {
 	GAME_ACTIVE_ARROW_TO_ITEM,
 	GAME_SELECT_TILE_INDEX
 };
-enum {
+enum
+{
 	NET_MESSAGE_UNKNOWN = 0,
 	NET_MESSAGE_SERVER_LOGIN_REQUEST,
 	NET_MESSAGE_GENERIC_TEXT,

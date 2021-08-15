@@ -1,11 +1,14 @@
 #pragma once
+
 #include <string>
 #include "proton/vector.hpp"
 
+using namespace std;
+
 class player {
    public:
-    std::string name{};
-    std::string country{};
+    string name{};
+    string country{};
     int netid = -1;
     int userid = -1;
     vector2_t pos{};

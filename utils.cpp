@@ -1,52 +1,77 @@
-#include "utils.h"
 #include <algorithm>
 #include <chrono>
 #include <random>
+#include <regex>
+#include <fstream>
+#include <ncurses.h>
+#include "utils.h"
 #include "proton/variant.hpp"
+#include "server.h"
+#include "json.hpp"
+#include "gt.hpp"
 
-char* utils::get_text(ENetPacket* packet) {
-    gametankpacket_t* tank = reinterpret_cast<gametankpacket_t*>(packet->data);
-    memset(packet->data + packet->dataLength - 1, 0, 1);
-    return static_cast<char*>(&tank->m_data);
+using namespace std;
+using json = nlohmann::json;
+
+string utils::toUpper(string str)
+{
+    string text = str;
+    transform(text.begin(), text.end(), text.begin(), ::toupper);
+    return text;
 }
-gameupdatepacket_t* utils::get_struct(ENetPacket* packet) {
+
+char *utils::getText(ENetPacket *packet)
+{
+    gametankpacket_t *tank = reinterpret_cast<gametankpacket_t *>(packet->data);
+    memset(packet->data + packet->dataLength - 1, 0, 1);
+    return static_cast<char *>(&tank->m_data);
+}
+
+gameupdatepacket_t *utils::getStruct(ENetPacket *packet)
+{
     if (packet->dataLength < sizeof(gameupdatepacket_t) - 4)
         return nullptr;
-    gametankpacket_t* tank = reinterpret_cast<gametankpacket_t*>(packet->data);
-    gameupdatepacket_t* gamepacket = reinterpret_cast<gameupdatepacket_t*>(packet->data + 4);
-    if (gamepacket->m_packet_flags & 8) {
-        if (packet->dataLength < gamepacket->m_data_size + 60) {
-            printf("got invalid packet. (too small)\n");
+    gametankpacket_t *tank = reinterpret_cast<gametankpacket_t *>(packet->data);
+    gameupdatepacket_t *gamepacket = reinterpret_cast<gameupdatepacket_t *>(packet->data + 4);
+    if (gamepacket->m_packet_flags & 8)
+    {
+        if (packet->dataLength < gamepacket->m_data_size + 60)
+        {
+            // printf("got invalid packet. (too small)\n");
             return nullptr;
         }
-        return reinterpret_cast<gameupdatepacket_t*>(&tank->m_data);
-    } else
+        return reinterpret_cast<gameupdatepacket_t *>(&tank->m_data);
+    }
+    else
         gamepacket->m_data_size = 0;
     return gamepacket;
 }
-std::mt19937 rng;
+mt19937 rng;
 
-int utils::random(int min, int max) {
+int utils::random(int min, int max)
+{
     if (DO_ONCE)
-        rng.seed((unsigned int)std::chrono::high_resolution_clock::now().time_since_epoch().count());
-    std::uniform_int_distribution<int> distribution(min, max);
+        rng.seed((unsigned int)chrono::high_resolution_clock::now().time_since_epoch().count());
+    uniform_int_distribution<int> distribution(min, max);
     return distribution(rng);
 }
 
-std::string utils::generate_rid() {
-    std::string rid_str;
+string utils::generateRid()
+{
+    string rid_str;
 
     for (int i = 0; i < 16; i++)
-        rid_str += utils::hex_str(utils::random(0, 255));
+        rid_str += utils::hexStr(utils::random(0, 255));
 
-    std::transform(rid_str.begin(), rid_str.end(), rid_str.begin(), ::toupper);
+    transform(rid_str.begin(), rid_str.end(), rid_str.begin(), ::toupper);
 
     return rid_str;
 }
-uint32_t utils::hash(uint8_t* str, uint32_t len) {
+uint32_t utils::hash(uint8_t *str, uint32_t len)
+{
     if (!str)
         return 0;
-    uint8_t* n = (uint8_t*)str;
+    uint8_t *n = (uint8_t *)str;
     uint32_t acc = 0x55555555;
     if (!len)
         while (*n)
@@ -56,24 +81,28 @@ uint32_t utils::hash(uint8_t* str, uint32_t len) {
             acc = (acc >> 27) + (acc << 5) + *n++;
     return acc;
 }
-std::string utils::generate_mac(const std::string& prefix) {
-    std::string x = prefix + ":";
-    for (int i = 0; i < 5; i++) {
-        x += utils::hex_str(utils::random(0, 255));
+string utils::generateMac(const string &prefix)
+{
+    string x = prefix + ":";
+    for (int i = 0; i < 5; i++)
+    {
+        x += utils::hexStr(utils::random(0, 255));
         if (i != 4)
             x += ":";
     }
     return x;
 }
 const char hexmap_s[17] = "0123456789abcdef";
-std::string utils::hex_str(unsigned char data) {
-    std::string s(2, ' ');
+string utils::hexStr(unsigned char data)
+{
+    string s(2, ' ');
     s[0] = hexmap_s[(data & 0xF0) >> 4];
     s[1] = hexmap_s[data & 0x0F];
     return s;
 }
 
-std::string utils::random(uint32_t length) {
+string utils::random(uint32_t length)
+{
     static auto randchar = []() -> char {
         const char charset[] =
             "0123456789"
@@ -83,18 +112,58 @@ std::string utils::random(uint32_t length) {
         return charset[utils::random(INT16_MAX, INT32_MAX) % max_index];
     };
 
-    std::string str(length, 0);
-    std::generate_n(str.begin(), length, randchar);
+    string str(length, 0);
+    generate_n(str.begin(), length, randchar);
     return str;
 }
 
-bool utils::replace(std::string& str, const std::string& from, const std::string& to) {
+bool utils::replace(string &str, const string &from, const string &to)
+{
     size_t start_pos = str.find(from);
-    if (start_pos == std::string::npos)
+    if (start_pos == string::npos)
         return false;
     str.replace(start_pos, from.length(), to);
     return true;
 }
-bool utils::is_number(const std::string& s) {
-    return !s.empty() && std::find_if(s.begin() + (*s.data() == '-' ? 1 : 0), s.end(), [](char c) { return !std::isdigit(c); }) == s.end();
+bool utils::isNumber(const string &s)
+{
+    return !s.empty() && find_if(s.begin() + (*s.data() == '-' ? 1 : 0), s.end(), [](char c) { return !isdigit(c); }) == s.end();
+}
+
+int utils::getNetIDFromVector(string *playerName)
+{
+    for (auto &player : g_server->m_world.players)
+    {
+        if (utils::toUpper(player.name) == utils::toUpper(*playerName))
+            return player.netid;
+    }
+    return 0;
+}
+
+string utils::stripMessage(string msg)
+{
+    regex e("\\x60[a-zA-Z0-9!@#$%^&*()_+\\-=\\[\\]\\{};':\"\\\\|,.<>\\/?]");
+    string result = regex_replace(msg, e, "");
+    result.erase(std::remove(result.begin(), result.end(), '`'), result.end());
+    return result;
+}
+
+void utils::saveUserInfo(string username, string password, string ownerName)
+{
+    ofstream file;
+    file.open(gt::configuration_file_name);
+    json userInfo;
+    userInfo["username"] = username;
+    userInfo["password"] = password;
+    userInfo["owner_name"] = ownerName;
+    file << userInfo;
+    file.close();
+}
+
+string utils::getValueFromPattern(string from, string pattern)
+{
+    regex regexp(pattern);
+    smatch m;
+    regex_search(from, m, regexp);
+    return m[1];
 }

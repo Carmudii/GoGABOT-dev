@@ -1,14 +1,16 @@
 #pragma once
+
 #include <stdint.h>
 #include <string>
 #include <vector>
+#include <fstream>
 #include "enet/include/enet.h"
 #include "packet.h"
 #include "proton/variant.hpp"
 
 #define PRINTS(msg, ...) printf("[SERVER]: " msg, ##__VA_ARGS__);
-#define PRINTC(msg, ...) printf("[CLIENT]: " msg, ##__VA_ARGS__);
-#define MALLOC(type, ...) (type*)(malloc(sizeof(type) __VA_ARGS__))
+#define PRINTD(msg, ...) printf("[DEBUG]: " msg, ##__VA_ARGS__);
+#define MALLOC(type, ...) (type *)(malloc(sizeof(type) __VA_ARGS__))
 #define get_packet_type(packet) (packet->dataLength > 3 ? *packet->data : 0)
 #define DO_ONCE            \
     ([]() {                \
@@ -21,18 +23,37 @@
 #define INLINE inline
 #endif
 
-namespace utils {
-    char* get_text(ENetPacket* packet);
-    gameupdatepacket_t* get_struct(ENetPacket* packet);
-    int random(int min, int max);
-    std::string generate_rid();
-    uint32_t hash(uint8_t* str, uint32_t len);
-    std::string generate_mac(const std::string& prefix = "02");
-    std::string hex_str(unsigned char data);
-    std::string random(uint32_t length);
-    INLINE uint8_t* get_extended(gameupdatepacket_t* packet) {
-        return reinterpret_cast<uint8_t*>(&packet->m_data_size);
-    }
-    bool replace(std::string& str, const std::string& from, const std::string& to);
-    bool is_number(const std::string& s);
+using namespace std;
+
+namespace utils
+{
+INLINE uint8_t *get_extended(gameupdatepacket_t *packet)
+{
+    return reinterpret_cast<uint8_t *>(&packet->m_data_size);
+}
+
+INLINE bool ifExists(const string &name)
+{
+    ifstream file(name.c_str());
+    return file.good();
+}
+
+char *getText(ENetPacket *packet);
+int random(int min, int max);
+int getNetIDFromVector(string *playerName);
+
+uint32_t hash(uint8_t *str, uint32_t len);
+string generateRid();
+string generateMac(const std::string &prefix = "02");
+string hexStr(unsigned char data);
+string random(uint32_t length);
+string toUpper(string str);
+string stripMessage(string msg);
+string getValueFromPattern(string from, string pattern);
+
+bool replace(std::string &str, const std::string &from, const std::string &to);
+bool isNumber(const std::string &s);
+void saveUserInfo(string username, string password, string ownerName);
+
+gameupdatepacket_t *getStruct(ENetPacket *packet);
 } // namespace utils
