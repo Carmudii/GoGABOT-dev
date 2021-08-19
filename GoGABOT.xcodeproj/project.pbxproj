@@ -1,0 +1,429 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FA83353C26CA1BEC00DE58D2 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA83353B26CA1BEC00DE58D2 /* main.cpp */; };
+		FA83355726CA1CB300DE58D2 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA83354426CA1CB200DE58D2 /* utils.cpp */; };
+		FA83355826CA1CB300DE58D2 /* gt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA83354526CA1CB200DE58D2 /* gt.cpp */; };
+		FA83355926CA1CB300DE58D2 /* events.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA83354926CA1CB200DE58D2 /* events.cpp */; };
+		FA83355A26CA1CB300DE58D2 /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA83354C26CA1CB200DE58D2 /* server.cpp */; };
+		FA83357526CA24C500DE58D2 /* sandbird.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83357226CA237900DE58D2 /* sandbird.c */; };
+		FA83357626CA24C500DE58D2 /* callbacks.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83356226CA235500DE58D2 /* callbacks.c */; };
+		FA83357726CA24C500DE58D2 /* host.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83356526CA235500DE58D2 /* host.c */; };
+		FA83357826CA24C500DE58D2 /* list.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83356926CA235500DE58D2 /* list.c */; };
+		FA83357926CA24C500DE58D2 /* packet.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83356326CA235500DE58D2 /* packet.c */; };
+		FA83357A26CA24C500DE58D2 /* peer.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83356726CA235500DE58D2 /* peer.c */; };
+		FA83357B26CA24C500DE58D2 /* protocol.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83356426CA235500DE58D2 /* protocol.c */; };
+		FA83357C26CA24C500DE58D2 /* unix.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83356626CA235500DE58D2 /* unix.c */; };
+		FA83357D26CA24C500DE58D2 /* win32.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83356826CA235500DE58D2 /* win32.c */; };
+		FA83357E26CA24C500DE58D2 /* compress.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83356026CA231600DE58D2 /* compress.c */; };
+		FA83357F26CA25E300DE58D2 /* callbacks.c in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83356226CA235500DE58D2 /* callbacks.c */; };
+		FA83358026CA25E300DE58D2 /* compress.c in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83356026CA231600DE58D2 /* compress.c */; };
+		FA83358126CA25E300DE58D2 /* host.c in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83356526CA235500DE58D2 /* host.c */; };
+		FA83358226CA25E300DE58D2 /* list.c in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83356926CA235500DE58D2 /* list.c */; };
+		FA83358326CA25E300DE58D2 /* packet.c in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83356326CA235500DE58D2 /* packet.c */; };
+		FA83358426CA25E300DE58D2 /* peer.c in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83356726CA235500DE58D2 /* peer.c */; };
+		FA83358526CA25E300DE58D2 /* protocol.c in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83356426CA235500DE58D2 /* protocol.c */; };
+		FA83358626CA25E300DE58D2 /* unix.c in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83356626CA235500DE58D2 /* unix.c */; };
+		FA83358726CA25E300DE58D2 /* win32.c in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83356826CA235500DE58D2 /* win32.c */; };
+		FA83358826CA25F600DE58D2 /* sandbird.c in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83357226CA237900DE58D2 /* sandbird.c */; };
+		FA83358F26CAB5A800DE58D2 /* libncurses.5.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83358C26CAB5A700DE58D2 /* libncurses.5.tbd */; };
+		FA83359026CAB5A800DE58D2 /* libncurses.5.4.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83358D26CAB5A700DE58D2 /* libncurses.5.4.tbd */; };
+		FA83359126CAB5A800DE58D2 /* libncurses.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83358E26CAB5A800DE58D2 /* libncurses.tbd */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		FA83353626CA1BEC00DE58D2 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		FA83353826CA1BEC00DE58D2 /* GoGABOT */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GoGABOT; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA83353B26CA1BEC00DE58D2 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		FA83354326CA1CB100DE58D2 /* Users */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Users; sourceTree = "<group>"; };
+		FA83354426CA1CB200DE58D2 /* utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
+		FA83354526CA1CB200DE58D2 /* gt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gt.cpp; sourceTree = "<group>"; };
+		FA83354626CA1CB200DE58D2 /* world.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = world.h; sourceTree = "<group>"; };
+		FA83354726CA1CB200DE58D2 /* player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = player.h; sourceTree = "<group>"; };
+		FA83354826CA1CB200DE58D2 /* server.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = server.h; sourceTree = "<group>"; };
+		FA83354926CA1CB200DE58D2 /* events.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = events.cpp; sourceTree = "<group>"; };
+		FA83354A26CA1CB200DE58D2 /* proton */ = {isa = PBXFileReference; lastKnownFileType = folder; path = proton; sourceTree = "<group>"; };
+		FA83354B26CA1CB200DE58D2 /* Ui */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Ui; sourceTree = "<group>"; };
+		FA83354C26CA1CB200DE58D2 /* server.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = server.cpp; sourceTree = "<group>"; };
+		FA83354D26CA1CB200DE58D2 /* gt.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = gt.hpp; sourceTree = "<group>"; };
+		FA83354F26CA1CB200DE58D2 /* events.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = events.h; sourceTree = "<group>"; };
+		FA83355026CA1CB200DE58D2 /* packet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = packet.h; sourceTree = "<group>"; };
+		FA83355126CA1CB300DE58D2 /* sandbird */ = {isa = PBXFileReference; lastKnownFileType = folder; path = sandbird; sourceTree = "<group>"; };
+		FA83355226CA1CB300DE58D2 /* enet */ = {isa = PBXFileReference; lastKnownFileType = folder; path = enet; sourceTree = "<group>"; };
+		FA83355326CA1CB300DE58D2 /* json.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json.hpp; sourceTree = "<group>"; };
+		FA83355426CA1CB300DE58D2 /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
+		FA83355626CA1CB300DE58D2 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		FA83356026CA231600DE58D2 /* compress.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = compress.c; path = GoGABOT/enet/compress.c; sourceTree = "<group>"; };
+		FA83356226CA235500DE58D2 /* callbacks.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = callbacks.c; path = GoGABOT/enet/callbacks.c; sourceTree = "<group>"; };
+		FA83356326CA235500DE58D2 /* packet.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = packet.c; path = GoGABOT/enet/packet.c; sourceTree = "<group>"; };
+		FA83356426CA235500DE58D2 /* protocol.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = protocol.c; path = GoGABOT/enet/protocol.c; sourceTree = "<group>"; };
+		FA83356526CA235500DE58D2 /* host.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = host.c; path = GoGABOT/enet/host.c; sourceTree = "<group>"; };
+		FA83356626CA235500DE58D2 /* unix.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = unix.c; path = GoGABOT/enet/unix.c; sourceTree = "<group>"; };
+		FA83356726CA235500DE58D2 /* peer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = peer.c; path = GoGABOT/enet/peer.c; sourceTree = "<group>"; };
+		FA83356826CA235500DE58D2 /* win32.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = win32.c; path = GoGABOT/enet/win32.c; sourceTree = "<group>"; };
+		FA83356926CA235500DE58D2 /* list.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = list.c; path = GoGABOT/enet/list.c; sourceTree = "<group>"; };
+		FA83357226CA237900DE58D2 /* sandbird.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = sandbird.c; path = GoGABOT/sandbird/sandbird.c; sourceTree = "<group>"; };
+		FA83358C26CAB5A700DE58D2 /* libncurses.5.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.5.tbd; path = usr/lib/libncurses.5.tbd; sourceTree = SDKROOT; };
+		FA83358D26CAB5A700DE58D2 /* libncurses.5.4.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.5.4.tbd; path = usr/lib/libncurses.5.4.tbd; sourceTree = SDKROOT; };
+		FA83358E26CAB5A800DE58D2 /* libncurses.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.tbd; path = usr/lib/libncurses.tbd; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FA83353526CA1BEC00DE58D2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA83358F26CAB5A800DE58D2 /* libncurses.5.tbd in Frameworks */,
+				FA83359026CAB5A800DE58D2 /* libncurses.5.4.tbd in Frameworks */,
+				FA83359126CAB5A800DE58D2 /* libncurses.tbd in Frameworks */,
+				FA83358826CA25F600DE58D2 /* sandbird.c in Frameworks */,
+				FA83357F26CA25E300DE58D2 /* callbacks.c in Frameworks */,
+				FA83358026CA25E300DE58D2 /* compress.c in Frameworks */,
+				FA83358126CA25E300DE58D2 /* host.c in Frameworks */,
+				FA83358226CA25E300DE58D2 /* list.c in Frameworks */,
+				FA83358326CA25E300DE58D2 /* packet.c in Frameworks */,
+				FA83358426CA25E300DE58D2 /* peer.c in Frameworks */,
+				FA83358526CA25E300DE58D2 /* protocol.c in Frameworks */,
+				FA83358626CA25E300DE58D2 /* unix.c in Frameworks */,
+				FA83358726CA25E300DE58D2 /* win32.c in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FA83352F26CA1BEC00DE58D2 = {
+			isa = PBXGroup;
+			children = (
+				FA83353A26CA1BEC00DE58D2 /* GoGABOT */,
+				FA83353926CA1BEC00DE58D2 /* Products */,
+				FA83355F26CA231600DE58D2 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		FA83353926CA1BEC00DE58D2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FA83353826CA1BEC00DE58D2 /* GoGABOT */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FA83353A26CA1BEC00DE58D2 /* GoGABOT */ = {
+			isa = PBXGroup;
+			children = (
+				FA83353B26CA1BEC00DE58D2 /* main.cpp */,
+				FA83354926CA1CB200DE58D2 /* events.cpp */,
+				FA83354F26CA1CB200DE58D2 /* events.h */,
+				FA83354526CA1CB200DE58D2 /* gt.cpp */,
+				FA83354D26CA1CB200DE58D2 /* gt.hpp */,
+				FA83355326CA1CB300DE58D2 /* json.hpp */,
+				FA83355026CA1CB200DE58D2 /* packet.h */,
+				FA83354726CA1CB200DE58D2 /* player.h */,
+				FA83355626CA1CB300DE58D2 /* README.md */,
+				FA83354C26CA1CB200DE58D2 /* server.cpp */,
+				FA83354826CA1CB200DE58D2 /* server.h */,
+				FA83354426CA1CB200DE58D2 /* utils.cpp */,
+				FA83355426CA1CB300DE58D2 /* utils.h */,
+				FA83354626CA1CB200DE58D2 /* world.h */,
+				FA83355226CA1CB300DE58D2 /* enet */,
+				FA83354A26CA1CB200DE58D2 /* proton */,
+				FA83355126CA1CB300DE58D2 /* sandbird */,
+				FA83354B26CA1CB200DE58D2 /* Ui */,
+				FA83354326CA1CB100DE58D2 /* Users */,
+			);
+			path = GoGABOT;
+			sourceTree = "<group>";
+		};
+		FA83355F26CA231600DE58D2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FA83358D26CAB5A700DE58D2 /* libncurses.5.4.tbd */,
+				FA83358C26CAB5A700DE58D2 /* libncurses.5.tbd */,
+				FA83358E26CAB5A800DE58D2 /* libncurses.tbd */,
+				FA83357226CA237900DE58D2 /* sandbird.c */,
+				FA83356226CA235500DE58D2 /* callbacks.c */,
+				FA83356526CA235500DE58D2 /* host.c */,
+				FA83356926CA235500DE58D2 /* list.c */,
+				FA83356326CA235500DE58D2 /* packet.c */,
+				FA83356726CA235500DE58D2 /* peer.c */,
+				FA83356426CA235500DE58D2 /* protocol.c */,
+				FA83356626CA235500DE58D2 /* unix.c */,
+				FA83356826CA235500DE58D2 /* win32.c */,
+				FA83356026CA231600DE58D2 /* compress.c */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FA83353726CA1BEC00DE58D2 /* GoGABOT */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA83353F26CA1BEC00DE58D2 /* Build configuration list for PBXNativeTarget "GoGABOT" */;
+			buildPhases = (
+				FA83353426CA1BEC00DE58D2 /* Sources */,
+				FA83353526CA1BEC00DE58D2 /* Frameworks */,
+				FA83353626CA1BEC00DE58D2 /* CopyFiles */,
+				FA83357426CA242000DE58D2 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GoGABOT;
+			productName = GoGABOT;
+			productReference = FA83353826CA1BEC00DE58D2 /* GoGABOT */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FA83353026CA1BEC00DE58D2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1130;
+				ORGANIZATIONNAME = 9GATE;
+				TargetAttributes = {
+					FA83353726CA1BEC00DE58D2 = {
+						CreatedOnToolsVersion = 11.3.1;
+					};
+				};
+			};
+			buildConfigurationList = FA83353326CA1BEC00DE58D2 /* Build configuration list for PBXProject "GoGABOT" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = FA83352F26CA1BEC00DE58D2;
+			productRefGroup = FA83353926CA1BEC00DE58D2 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FA83353726CA1BEC00DE58D2 /* GoGABOT */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		FA83357426CA242000DE58D2 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FA83353426CA1BEC00DE58D2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA83357526CA24C500DE58D2 /* sandbird.c in Sources */,
+				FA83357626CA24C500DE58D2 /* callbacks.c in Sources */,
+				FA83357726CA24C500DE58D2 /* host.c in Sources */,
+				FA83357826CA24C500DE58D2 /* list.c in Sources */,
+				FA83357926CA24C500DE58D2 /* packet.c in Sources */,
+				FA83357A26CA24C500DE58D2 /* peer.c in Sources */,
+				FA83357B26CA24C500DE58D2 /* protocol.c in Sources */,
+				FA83357C26CA24C500DE58D2 /* unix.c in Sources */,
+				FA83357D26CA24C500DE58D2 /* win32.c in Sources */,
+				FA83357E26CA24C500DE58D2 /* compress.c in Sources */,
+				FA83355926CA1CB300DE58D2 /* events.cpp in Sources */,
+				FA83355826CA1CB300DE58D2 /* gt.cpp in Sources */,
+				FA83353C26CA1BEC00DE58D2 /* main.cpp in Sources */,
+				FA83355A26CA1CB300DE58D2 /* server.cpp in Sources */,
+				FA83355726CA1CB300DE58D2 /* utils.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		FA83353D26CA1BEC00DE58D2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		FA83353E26CA1BEC00DE58D2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		FA83354026CA1BEC00DE58D2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				GCC_VERSION = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		FA83354126CA1BEC00DE58D2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				GCC_VERSION = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FA83353326CA1BEC00DE58D2 /* Build configuration list for PBXProject "GoGABOT" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA83353D26CA1BEC00DE58D2 /* Debug */,
+				FA83353E26CA1BEC00DE58D2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FA83353F26CA1BEC00DE58D2 /* Build configuration list for PBXNativeTarget "GoGABOT" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA83354026CA1BEC00DE58D2 /* Debug */,
+				FA83354126CA1BEC00DE58D2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FA83353026CA1BEC00DE58D2 /* Project object */;
+}

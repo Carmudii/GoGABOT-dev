@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>logFormatVersion</key>
+	<integer>10</integer>
+	<key>logs</key>
+	<dict>
+		<key>3B55415F-AF62-4978-A78B-D21E45DD0904</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogMajorGroupSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.target.product-type.tool</string>
+			<key>fileName</key>
+			<string>3B55415F-AF62-4978-A78B-D21E45DD0904.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+			</dict>
+			<key>signature</key>
+			<string>GoGABOT-ajligrzrulyqptfnfrdwzqrroxqf</string>
+			<key>timeStartedRecording</key>
+			<real>651025746.04837</real>
+			<key>timeStoppedRecording</key>
+			<real>651025746.07680798</real>
+			<key>title</key>
+			<string>Build target GoGABOT</string>
+			<key>uniqueIdentifier</key>
+			<string>3B55415F-AF62-4978-A78B-D21E45DD0904</string>
+		</dict>
+	</dict>
+	<key>preserveOldLogs</key>
+	<true/>
+</dict>
+</plist>
