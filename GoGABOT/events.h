@@ -16,12 +16,12 @@ namespace events
         bool onState(gameupdatepacket_t *packet);
         void onLoginRequest();
         void onPlayerEnterGame();
-        bool onSendMapData(gameupdatepacket_t *packet);
-        void onSendPuchDamage(gameupdatepacket_t *packet);
+        bool onSendMapData(gameupdatepacket_t *packet, long packetLength);
         void onSendChatPacket();
+        void onSendPlacePacket();
         void onSendMessagePacket();
-        void onSendPunchPacket();
+        void onSendTileChangeRequestPacket();
         void onSendPacketMove(float posX, float posY, int characterState);
-        void onSendCollectDropItem(gameupdatepacket_t *packet);
+        bool onSendCollectDropItem(float posX, float posY);
         }; // namespace send
     }; // namespace events

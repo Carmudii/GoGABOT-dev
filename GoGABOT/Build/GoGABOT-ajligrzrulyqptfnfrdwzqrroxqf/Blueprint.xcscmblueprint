@@ -1,0 +1,23 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "40EFADD542C30F7A7A10E52817555B40BE9A21F7",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "40EFADD542C30F7A7A10E52817555B40BE9A21F7" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "799BB279-129D-4EEB-AE22-32CCEBB527EB",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "40EFADD542C30F7A7A10E52817555B40BE9A21F7" : "GoGABOT\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "GoGABOT",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "GoGABOT.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Carmudii\/GoGABOT.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "40EFADD542C30F7A7A10E52817555B40BE9A21F7"
+    }
+  ]
+}

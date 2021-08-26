@@ -6,7 +6,7 @@
 	<integer>10</integer>
 	<key>logs</key>
 	<dict>
-		<key>3B55415F-AF62-4978-A78B-D21E45DD0904</key>
+		<key>C171066F-C810-4A33-A1FE-33A1E73ECCD1</key>
 		<dict>
 			<key>className</key>
 			<string>IDEActivityLogMajorGroupSection</string>
@@ -15,7 +15,7 @@
 			<key>domainType</key>
 			<string>Xcode.IDEActivityLogDomainType.target.product-type.tool</string>
 			<key>fileName</key>
-			<string>3B55415F-AF62-4978-A78B-D21E45DD0904.xcactivitylog</string>
+			<string>C171066F-C810-4A33-A1FE-33A1E73ECCD1.xcactivitylog</string>
 			<key>hasPrimaryLog</key>
 			<true/>
 			<key>primaryObservable</key>
@@ -26,13 +26,13 @@
 			<key>signature</key>
 			<string>GoGABOT-ajligrzrulyqptfnfrdwzqrroxqf</string>
 			<key>timeStartedRecording</key>
-			<real>651025746.04837</real>
+			<real>651649233.648283</real>
 			<key>timeStoppedRecording</key>
-			<real>651025746.07680798</real>
+			<real>651649243.72574401</real>
 			<key>title</key>
 			<string>Build target GoGABOT</string>
 			<key>uniqueIdentifier</key>
-			<string>3B55415F-AF62-4978-A78B-D21E45DD0904</string>
+			<string>C171066F-C810-4A33-A1FE-33A1E73ECCD1</string>
 		</dict>
 	</dict>
 	<key>preserveOldLogs</key>

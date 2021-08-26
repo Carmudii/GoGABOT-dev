@@ -5,22 +5,23 @@
 
 using namespace std;
 
-class player {
+class Player {
    public:
     string name{};
     string country{};
     int netid = -1;
     int userid = -1;
     vector2_t pos{};
+    vector2_t lastPos{};
     bool invis{};
     bool mod{};
-    player() {
+    Player() {
     
     }
-    bool operator==(const player& right) {
+    bool operator==(const Player& right) {
         return netid == right.netid && userid == right.userid;
     }
-    player(std::string name, int netid, int uid) {
+    Player(std::string name, int netid, int uid) {
         this->name = name;
         this->netid = netid;
         this->userid = uid;

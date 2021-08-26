@@ -24,20 +24,17 @@ int main()
 #endif
     
     string correctlyInput;
-    
     json getUserInfo;
-    
     bool isConfigurationFileExists = utils::ifExists(gt::configuration_file_name);
-    
 retype:
     
     system("clear");
     cout << R"(
 _________       ________________ ________ _______ ________
-__  ____/______ __  ____/___    |___  __ )__  __ \___  __/
-_  / __  _  __ \_  / __  __  /| |__  __  |_  / / /__  /
-/ /_/ /  / /_/ // /_/ /  _  ___ |_  /_/ / / /_/ / _  /
-\____/   \____/ \____/   /_/  |_|/_____/  \____/  /_/
+ __  ____/______ __  ____/___    |___  __ )__  __ \___  __/
+   _/ __  _  __ \_  / __  __  /| |__  __  |_  / / /__  /
+ / /_/ /  / /_/ // /_/ /  _  ___ |_  /_/ / / /_/ / _  /
+ \____/   \____/ \____/   /_/  |_|/_____/  \____/  /_/
 ---------------- Growtopia version v)" +
     gt::version + R"( ----------------
 ============ [LOGIN INTO YOUR BOT ACCOUNT] ============
@@ -59,6 +56,7 @@ _  / __  _  __ \_  / __  __  /| |__  __  |_  / / /__  /
         gt::bot_name = getUserInfo["username"];
         gt::bot_password = getUserInfo["password"];
         gt::owner_name = getUserInfo["owner_name"];
+        file.close();
     }
     cout << "- [+] Enter target world: ";
     cin >> gt::target_world_name;
@@ -66,6 +64,12 @@ _  / __  _  __ \_  / __  __  /| |__  __  |_  / / /__  /
     cout << "- [+] Enter spam text: ";
     cin.ignore();
     getline(cin, gt::spam_text);
+    cout << "- [+] Leave it blank if you won't break" << endl;
+    cout << "- [+] Enter block id: ";
+//    cin.ignore();
+//    string bid;
+//    getline(cin, bid);
+    gt::block_id = 2; // atoi(bid.c_str());
     
     cout << R"(
 ============= [ YOUR BOT ACCOUNT DETAIL ] =============
@@ -79,14 +83,17 @@ _  / __  _  __ \_  / __  __  /| |__  __  |_  / / /__  /
     gt::bot_password + R"(
 - [+] Spam text    : )" +
     gt::spam_text + R"(
+- [+] Block Id     : )" +
+    to_string(gt::block_id) + R"(
 ============= [ YOUR BOT ACCOUNT DETAIL ] =============
 )";
     
 badInput:
-
+    
     cout << "- [+] Check your data when is right? [Y/n]: ";
     cin >> correctlyInput;
-
+    //    correctlyInput = "y";
+    
     if (utils::toUpper(correctlyInput) == "N")
     {
         goto retype;
@@ -102,18 +109,18 @@ badInput:
     }
     
     system("clear");
+    initscr();
+    noecho();
+    curs_set(0);
+    enet_initialize();
+    
+    g_server->m_world.setupItemDefs();
     if (g_server->connect())
     {
-        
-        initscr();
-        noecho();
-        curs_set(0);
-        enet_initialize();
-        
         int screenMaxY, screenMaxX;
         getmaxyx(stdscr, screenMaxY, screenMaxX);
         string botStatus = "OFFLINE";
-
+        
         WINDOW *creditWindow = newwin(5, 36, 2, 4);
         box(creditWindow, 0, 0);
         mvwprintw(creditWindow, 1, 1, "---=====[ GoGABOT v1.0.0 ]=====---");
@@ -125,27 +132,30 @@ badInput:
         box(win, 0, 0);
         box(statusWindow, 0, 0);
         keypad(win, TRUE);
-
+        
         Menu menus[] = {
             Menu("[+] SPAM"),
-            Menu("[+] SPAM DELAY", 3500, 100, TYPE_NUMBER),
+            Menu("[+] SPAM DELAY", 3500, 100, 3500 * 2,TYPE_NUMBER),
             Menu("[+] AUTO MESSAGE"),
             Menu("[+] FOLLOWING OWNER"),
             Menu("[+] FOLLOWING PUBLIC"),
             Menu("[+] FOLLOWING PUNCH"),
             Menu("[+] AUTO BAN PEOPLE"),
+            Menu("[+] AUTO COLLECT"),
+            Menu("[+] AUTO DROP", 0, 50, 150, TYPE_NUMBER),
             Menu("[+] AUTO BREAK ON TOP"),
-            Menu("[+] HIT PER BLOCK", 1, 1, TYPE_NUMBER),
+            Menu("[+] HIT PER BLOCK", 1, 1, 20, TYPE_NUMBER),
+            Menu("[+] AUTO PLACE"),
             Menu("[+] EXIT", TYPE_DEFAULT),
         };
-
+        
         MenuBar menuBar = MenuBar(win, menus, sizeof(menus) / sizeof(menus[0]), 25);
         menuBar.drawMenu();
-
+        
         std::thread binKey(&MenuBar::bindingKey, &menuBar);
         std::thread spamChat(events::send::onSendChatPacket);
         std::thread autoMsg(events::send::onSendMessagePacket);
-        std::thread autoBreak(events::send::onSendPunchPacket);
+        std::thread autoBreak(events::send::onSendTileChangeRequestPacket);
         binKey.detach();
         spamChat.detach();
         autoMsg.detach();
@@ -159,6 +169,7 @@ badInput:
     } else {
         cout << "Error when trying start client." << endl;
     }
+    
     endwin();
     return 0;
 }

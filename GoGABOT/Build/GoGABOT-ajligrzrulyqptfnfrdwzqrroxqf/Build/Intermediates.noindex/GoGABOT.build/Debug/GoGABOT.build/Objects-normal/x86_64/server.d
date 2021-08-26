@@ -10,10 +10,10 @@ dependencies: /Users/macbook/Documents/GoGABOT/GoGABOT/server.cpp \
   /Users/macbook/Documents/GoGABOT/GoGABOT/enet/include/callbacks.h \
   /Users/macbook/Documents/GoGABOT/GoGABOT/world.h \
   /Users/macbook/Documents/GoGABOT/GoGABOT/player.h \
+  /Users/macbook/Documents/GoGABOT/GoGABOT/utils.h \
   /Users/macbook/Documents/GoGABOT/GoGABOT/packet.h \
   /Users/macbook/Documents/GoGABOT/GoGABOT/events.h \
   /Users/macbook/Documents/GoGABOT/GoGABOT/gt.hpp \
   /Users/macbook/Documents/GoGABOT/GoGABOT/proton/hash.hpp \
   /Users/macbook/Documents/GoGABOT/GoGABOT/proton/rtparam.hpp \
-  /Users/macbook/Documents/GoGABOT/GoGABOT/proton/../utils.h \
-  /Users/macbook/Documents/GoGABOT/GoGABOT/utils.h
+  /Users/macbook/Documents/GoGABOT/GoGABOT/proton/../utils.h

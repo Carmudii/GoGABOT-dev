@@ -31,9 +31,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "546"
-            endingLineNumber = "546"
-            landmarkName = "events::send::onSendPunchPacket()"
-            landmarkType = "7">
+            endingLineNumber = "546">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -79,9 +77,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "466"
-            endingLineNumber = "466"
-            landmarkName = "events::send::onSendCollectDropItem(packet)"
-            landmarkType = "7">
+            endingLineNumber = "466">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -143,9 +139,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "470"
-            endingLineNumber = "470"
-            landmarkName = "events::send::onSendCollectDropItem(packet)"
-            landmarkType = "7">
+            endingLineNumber = "470">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

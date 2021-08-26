@@ -28,10 +28,11 @@ public:
     int typeMenu;
     int currentValue;
     int minValue;
+    int maxValue;
     bool enable;
     string text;
     
-    Menu(string text, int currentValue = 0, int increaseBy = 1, int menuType = TYPE_SELECTED)
+    Menu(string text, int currentValue = 0, int increaseBy = 1, int maxValue = 0, int menuType = TYPE_SELECTED)
     {
         this->text = text;
         this->enable = false;
@@ -39,6 +40,7 @@ public:
         this->typeMenu = menuType;
         this->currentValue = currentValue;
         this->minValue = currentValue;
+        this->maxValue = maxValue;
     }
 };
 
@@ -89,6 +91,31 @@ private:
         box(this->win, 0, 0);
     }
     
+    void handleActionType(bool isIncrement = false)
+    {
+        bool currentStatus = this->menus[selected_menu].enable;
+        int currentValue = this->menus[selected_menu].currentValue;
+        int increaseBy = this->menus[selected_menu].increaseBy;
+        int minValue = this->menus[selected_menu].minValue;
+        int maxValue = this->menus[selected_menu].maxValue;
+
+        if (this->menus[selected_menu].typeMenu == TYPE_NUMBER)
+        {
+            if (isIncrement)
+            {
+                this->menus[selected_menu].currentValue += (currentValue == maxValue) ? 0 : increaseBy;
+            }
+            else
+            {
+                this->menus[selected_menu].currentValue -= (currentValue == minValue) ? 0 : increaseBy;
+            }
+        }
+        else
+        {
+            this->menus[selected_menu].enable = !currentStatus;
+        }
+    }
+    
 public:
     MenuBar(WINDOW *win, Menu *menus, int num_menus, int maxX)
     {
@@ -115,32 +142,8 @@ public:
         this->drawActionMenu();
     }
     
-    void handleActionType(int minValue, int currentValue, int increaseBy, bool currentStatus, bool isIncrement = false)
-    {
-        if (this->menus[selected_menu].typeMenu == TYPE_NUMBER)
-        {
-            if (isIncrement)
-            {
-                this->menus[selected_menu].currentValue += increaseBy;
-            }
-            else
-            {
-                this->menus[selected_menu].currentValue -= (currentValue == minValue) ? 0 : increaseBy;
-            }
-        }
-        else
-        {
-            this->menus[selected_menu].enable = !currentStatus;
-        }
-    }
-    
     void handleTrigger(int trigger)
     {
-        bool currentStatus = this->menus[selected_menu].enable;
-        int currentValue = this->menus[selected_menu].currentValue;
-        int increaseBy = this->menus[selected_menu].increaseBy;
-        int minValue = this->menus[selected_menu].minValue;
-        
         switch (trigger)
         {
             case KEY_UP:
@@ -164,10 +167,10 @@ public:
                 }
                 break;
             case KEY_RIGHT:
-                this->handleActionType(minValue, currentValue, increaseBy, currentStatus, true);
+                this->handleActionType(true);
                 break;
             case KEY_LEFT:
-                this->handleActionType(minValue, currentValue, increaseBy, currentStatus);
+                this->handleActionType();
                 break;
             default:
                 break;
@@ -225,10 +228,25 @@ public:
                     gt::is_auto_ban = isActiveMenu;
                     break;
                 case 8:
-                    gt::is_auto_break_active = isActiveMenu;
+                    gt::is_auto_collect = isActiveMenu;
                     break;
                 case 9:
+                    gt::is_auto_drop = valueOfActiveMenu > 0;
+                    gt::max_dropped_block = valueOfActiveMenu;
+                    break;
+                case 10:
+                    gt::is_auto_break_active = isActiveMenu;
+                    gt::is_use_tile = isActiveMenu ? isActiveMenu : gt::is_auto_place_active;
+                    break;
+                case 11:
                     gt::hit_per_block = valueOfActiveMenu;
+                    break;
+                case 12:
+                    gt::is_auto_place_active = isActiveMenu;
+                    gt::is_use_tile = isActiveMenu ? isActiveMenu : gt::is_auto_break_active;
+                    if (isActiveMenu) {
+                        events::send::onSendCollectDropItem(g_server->m_world.local.pos.m_x, g_server->m_world.local.pos.m_y);
+                    }
                     break;
                 default:
                     gt::is_exit = isActiveMenu;
