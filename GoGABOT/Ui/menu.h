@@ -222,31 +222,31 @@ public:
                     gt::is_following_public = isActiveMenu;
                     break;
                 case 6:
-                    gt::is_following_punch = isActiveMenu;
+                    gt::is_following_closest_player = isActiveMenu;
                     break;
                 case 7:
-                    gt::is_auto_ban = isActiveMenu;
+                    gt::is_following_punch = isActiveMenu;
                     break;
                 case 8:
-                    gt::is_auto_collect = isActiveMenu;
+                    gt::is_auto_ban = isActiveMenu;
                     break;
                 case 9:
+                    gt::is_auto_collect = isActiveMenu;
+                    break;
+                case 10:
                     gt::is_auto_drop = valueOfActiveMenu > 0;
                     gt::max_dropped_block = valueOfActiveMenu;
                     break;
-                case 10:
+                case 11:
                     gt::is_auto_break_active = isActiveMenu;
                     gt::is_use_tile = isActiveMenu ? isActiveMenu : gt::is_auto_place_active;
                     break;
-                case 11:
+                case 12:
                     gt::hit_per_block = valueOfActiveMenu;
                     break;
-                case 12:
+                case 13:
                     gt::is_auto_place_active = isActiveMenu;
                     gt::is_use_tile = isActiveMenu ? isActiveMenu : gt::is_auto_break_active;
-                    if (isActiveMenu) {
-                        events::send::onSendCollectDropItem(g_server->m_world.local.pos.m_x, g_server->m_world.local.pos.m_y);
-                    }
                     break;
                 default:
                     gt::is_exit = isActiveMenu;

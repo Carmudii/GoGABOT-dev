@@ -12,11 +12,11 @@
 #include "gt.hpp"
 
 long World::posPtr = 0;
-vector<ItemDefinitionStruct> World::itemDefs;
+vector<World::ItemDefinitionStruct> World::itemDefs;
 __int16_t *World::foreground;
 __int16_t *World::background;
 
-ItemDefinitionStruct World::GetItemDef(int itemID)
+World::ItemDefinitionStruct World::GetItemDef(int itemID)
 {
     if (itemID < 0 || itemID > this->itemDefs.size()) return this->itemDefs[0];
     ItemDefinitionStruct def = this->itemDefs[itemID];
@@ -140,6 +140,7 @@ void World::tileSerialize(uint8_t *extended, int location) {
     this->foreground[location] = *(__int16_t *)(extended + this->posPtr);
     this->posPtr += 2;
     this->background[location] = *(__int16_t *)(extended + this->posPtr);
+    ItemDefinitionStruct def = GetItemDef(this->foreground[location]);
     this->posPtr += 2;
     short extraData = *(short *)(extended + this->posPtr);
     this->posPtr += 4;
@@ -150,6 +151,16 @@ void World::tileSerialize(uint8_t *extended, int location) {
     if(this->requiresTileExtra(this->foreground[location]) && this->foreground[location] != 0){
         this->tileExtraSerialize(extended, location);
     }
+}
+
+bool World::isSpecialTile(int id) {
+    ItemDefinitionStruct def = this->GetItemDef(id);
+    
+    return
+    def.actionType == 26 ||
+    def.actionType == 27 ||
+    def.actionType == 101;
+
 }
 
 void World::tileExtraSerialize(uint8_t *extended, int location) {

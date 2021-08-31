@@ -40,6 +40,7 @@ namespace gt
     extern bool is_auto_drop;
     extern bool is_following_owner;
     extern bool is_following_public;
+    extern bool is_following_closest_player;
     extern bool is_following_punch;
     extern bool is_auto_ban;
     extern bool is_owner_command;

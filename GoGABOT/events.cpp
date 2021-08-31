@@ -25,16 +25,13 @@ bool events::send::variantList(gameupdatepacket_t *packet)
     // PRINTD("varlist: %s\n", varlist.print().c_str());
     auto func = varlist[0].get_string();
     // probably subject to change, so not including in switch statement.
-    if (func.find("OnSuperMainStartAcceptLogon") != -1)
-        gt::in_game = true;
+    if (func.find("OnSuperMainStartAcceptLogon") != -1) gt::in_game = true;
     
     switch (hs::hash32(func.c_str()))
     {
-            // solve captcha
         case fnv32("onShowCaptcha"):
         {
-            auto menu = varlist[1].get_string();
-            gt::solve_captcha(menu);
+            gt::solve_captcha(varlist[1].get_string());
             return true;
         }
             break;
@@ -45,6 +42,7 @@ bool events::send::variantList(gameupdatepacket_t *packet)
             world.local = {};
             world.connected = false;
             world.name = "EXIT";
+            g_server->DroppedItem.clear();
             g_server->setTargetWorld(gt::target_world_name);
         }
             break;
@@ -55,16 +53,41 @@ bool events::send::variantList(gameupdatepacket_t *packet)
         {
             string text = varlist[1].get_string();
             string stripText = utils::stripMessage(text);
-//            PRINTD("onConsolMessage: %s\n", stripText.c_str());
-            if(stripText.find(">>Spam detected!") != -1) gt::safety_spam = 3;
-            if (stripText.find("[W]_") == -1)
-                return true;
-            
             string playerName = utils::getValueFromPattern(text, "`6<`w(.*)``>``");
-            if (gt::is_auto_ban && !playerName.empty() && (utils::toUpper(stripText).find("SELL") != -1 || utils::toUpper(stripText).find("GO ") != -1 || utils::toUpper(stripText).find("SCAM") != -1 || utils::toUpper(stripText).find("GOTO ") != -1 || utils::toUpper(stripText).find("SKEM") != -1))
+
+            if (stripText.find("Oops, " + utils::toUpper(gt::target_world_name) + " already has") != -1 || stripText.find("Destination has too many players") != -1)
+            {
+                // We need set delay to this because packet lost from client
+                this_thread::sleep_for(chrono::seconds(2));
+                g_server->setTargetWorld(gt::target_world_name);
+            }
+
+            if(stripText.find(">>Spam detected!") != -1) gt::safety_spam = 3;
+            if (stripText.find("[W]_") == -1) return true;
+
+            /* ***************************************************** */
+
+
+            if (utils::toUpper(gt::owner_name) == utils::toUpper(utils::getValueFromPattern(stripText, "\\[W\\]_ <(.*) \\!"))) {
+                if (stripText.find("!follow") != -1) {
+                    gt::is_following_owner = !gt::is_following_owner;
+                } else if (stripText.find("!setMsg")) {
+                    std::vector<string> spamStr = utils::split(text, "!setMsg");
+                    gt::spam_text = !spamStr.empty() ? spamStr[1] : "CHEAP ITEM GO `2Z99";
+                }
+            }
+            
+            if (gt::is_auto_ban && !playerName.empty() && (utils::toUpper(stripText).find("SELL") != -1 ||
+                                                           utils::toUpper(stripText).find("GO ") != -1 ||
+                                                           utils::toUpper(stripText).find("SCAM") != -1 ||
+                                                           utils::toUpper(stripText).find("GOTO ") != -1 ||
+                                                           utils::toUpper(stripText).find("SKEM") != -1))
             {
                 g_server->send("action|input\n|text|/ban " + playerName);
             }
+
+            /* ***************************************************** */
+
             return true;
         }
             break;
@@ -84,18 +107,12 @@ bool events::send::variantList(gameupdatepacket_t *packet)
                         return true;
                     }
             }
-            if (gt::is_auto_drop)
+            if (gt::is_auto_drop && content.find("embed_data|itemID|") != -1 && content.find("Drop") != -1)
             {
                 string itemid = content.substr(content.find("embed_data|itemID|") + 18, content.length() - content.find("embed_data|itemID|") - 1);
                 string count = content.substr(content.find("count||") + 7, content.length() - content.find("count||") - 1);
-                if (content.find("embed_data|itemID|") != -1)
-                {
-                    if (content.find("Drop") != -1)
-                    {
-                        g_server->send("action|dialog_return\ndialog_name|drop_item\nitemID|" + itemid + "|\ncount|" + count);
-                        return true;
-                    }
-                }
+                g_server->send("action|dialog_return\ndialog_name|drop_item\nitemID|" + itemid + "|\ncount|" + count);
+                return true;
             }
         }
             break;
@@ -262,7 +279,7 @@ bool events::send::onGenericText(string packet)
 
 bool events::send::onGameMessage(string packet)
 {
-    // PRINTD("Game message: %s\n", packet.c_str());
+//     PRINTD("Game message: %s\n", packet.c_str());
     rtvar var = rtvar::parse(packet);
     string msg = var.get("msg");
     if (msg.find("password is wrong") != -1 || msg.find("suspended") != -1 || msg.find("this account is currently banned") != -1)
@@ -272,7 +289,7 @@ bool events::send::onGameMessage(string packet)
         return true;
     } else if(msg.find("Server requesting that you re-logon") != -1 || msg.find("Too many people logging in at once") != -1)
     {
-        g_server->reconnecting();
+        g_server->reconnecting(true);
     }
     return false;
 }
@@ -285,11 +302,12 @@ bool events::send::onState(gameupdatepacket_t *packet)
     {
         gt::owner_net_id = utils::getNetIDFromVector(&gt::owner_name);
     }
-    //  g_server->inRange(packet->m_vec_x, packet->m_vec_y)
+
     if (gt::is_following_owner && packet->m_player_flags == gt::owner_net_id)
     {
         g_server->m_world.local.pos = vector2_t{packet->m_vec_x, packet->m_vec_y};
         g_server->m_world.local.lastPos = vector2_t{packet->m_vec_x, packet->m_vec_y};
+        g_server->m_world.local.packetFlag = packet->m_packet_flags;
         
         if (gt::is_following_punch && packet->m_state1 != -1 && packet->m_state2 != -1)
         {
@@ -303,9 +321,19 @@ bool events::send::onState(gameupdatepacket_t *packet)
     }
     else if (gt::is_following_public && packet->m_state1 == -1 && packet->m_state2 == -1 && g_server->inRange(packet->m_vec_x, packet->m_vec_y))
     {
-        return false;
+        return gt::is_following_closest_player ? !g_server->inRange(packet->m_vec_x, packet->m_vec_y, 80, 80) : false;
     }
+        
     return true;
+}
+
+void events::send::onSendTileActiveRequest(int posX, int posY) {
+    gameupdatepacket_t packet{};
+    packet.m_type = PACKET_TILE_ACTIVATE_REQUEST;
+    packet.m_player_flags = g_server->m_world.local.netid;
+    packet.m_vec_x = posX;
+    packet.m_vec_y = posY;
+    g_server->send(NET_MESSAGE_GAME_PACKET, (uint8_t*)&packet, sizeof(packet));
 }
 
 bool events::send::onSendMapData(gameupdatepacket_t *packet, long packetLength)
@@ -315,17 +343,16 @@ bool events::send::onSendMapData(gameupdatepacket_t *packet, long packetLength)
     extended += 4;
     auto data = extended + 6;
     auto name_length = *(short *)data;
-    /**/
+
     uint32_t totalTiles = *(uint32_t *)(extended + name_length + 16);
     g_server->m_world.posPtr = name_length + 20;
-    /**/
     
     char *name = new char[name_length + 1];
     memcpy(name, data + sizeof(short), name_length);
     char none = '\0';
     memcpy(name + name_length, &none, 1);
     /* *********************************************** */
-    
+        
     g_server->m_world.foreground = (__int16_t *)malloc(totalTiles * sizeof(__int16_t));
     g_server->m_world.background = (__int16_t *)malloc(totalTiles * sizeof(__int16_t));
     
@@ -334,9 +361,9 @@ bool events::send::onSendMapData(gameupdatepacket_t *packet, long packetLength)
         g_server->m_world.tileSerialize(extended, i);
     }
     
-    int itemUID = (int16_t)extended[g_server->m_world.posPtr + 20];
-    if (itemUID >= 0 && itemUID < 1000) {
-        g_server->dropedItemUID = itemUID;
+    int itemUID = *(uint16_t*)(extended + g_server->m_world.posPtr + 20);
+    if (itemUID >= 0 && itemUID < 10000) {
+        g_server->droppedItemUID = itemUID;
     }
     /* *********************************************** */
     
@@ -347,7 +374,10 @@ bool events::send::onSendMapData(gameupdatepacket_t *packet, long packetLength)
         g_server->setTargetWorld(gt::target_world_name);
     }
     
+    // we need to delete all allocation memory after used
     delete[] name;
+    free(g_server->m_world.foreground);
+    free(g_server->m_world.background);
     return false;
 }
 
@@ -369,7 +399,7 @@ bool events::send::onSendCollectDropItem(float posX, float posY)
     packet.m_player_flags = g_server->m_world.local.netid;
     packet.m_vec_x = posX;
     packet.m_vec_y = posY;
-    packet.m_int_data = g_server->dropedItemUID;
+    packet.m_int_data = g_server->droppedItemUID;
     packet.m_state1 = posX + posY + 4;
     g_server->send(NET_MESSAGE_GAME_PACKET, (uint8_t*)&packet, sizeof(packet));
     return true;
@@ -424,7 +454,7 @@ void events::send::onSendMessagePacket()
         {
             g_server->send("action|input\n|text|/msg " +
                            g_server->playerName[g_server->playerName.size() - 1] + " "
-                           + utils::addPattern(utils::colorstr(gt::spam_text)));
+                           + utils::generateQuotes(utils::colorStr(gt::spam_text)));
             g_server->playerName.pop_back();
         }
         //        else
@@ -438,11 +468,9 @@ void events::send::onSendMessagePacket()
 
 void events::send::onSendTileChangeRequestPacket()
 {
-    int totalPlacedBlock = 0;
-    float *x             = &g_server->m_world.local.lastPos.m_x;
-    float *y             = &g_server->m_world.local.lastPos.m_y;
-    int32_t *netID       = &g_server->m_world.local.netid;
-    bool isBreak         = gt::is_auto_break_active; // we don't need to make it to pointer since this is used for initialize
+    float *x       = &g_server->m_world.local.lastPos.m_x;
+    float *y       = &g_server->m_world.local.lastPos.m_y;
+    bool isBreak   = true;
     
     while (true)
     {
@@ -453,10 +481,16 @@ void events::send::onSendTileChangeRequestPacket()
         
         if (gt::is_use_tile && g_server->m_world.connected)
         {
+            if (gt::is_auto_break_active && gt::is_auto_place_active) {
+                isBreak = !isBreak;
+            } else if (gt::is_auto_break_active) {
+                isBreak = true;
+            } else if (gt::is_auto_place_active) {
+                isBreak = false;
+            }
+            
             gameupdatepacket_t packet{};
             packet.m_type = PACKET_TILE_CHANGE_REQUEST;
-            packet.m_player_flags = *netID;
-            packet.m_packet_flags = isBreak ? 2608 : 16;
             packet.m_vec_x = *x;
             packet.m_vec_y = *y;
             packet.m_state2 = (int)ceil(*y / 32) - 3;
@@ -466,20 +500,15 @@ void events::send::onSendTileChangeRequestPacket()
                 packet.m_state1 = (int)(*x / 32) + i;
                 for(int counterHit = 1; counterHit <= (isBreak ? gt::hit_per_block : 2); counterHit++) {
                     g_server->send(NET_MESSAGE_GAME_PACKET, (uint8_t*)&packet, sizeof(packet));
-                    this_thread::sleep_for(chrono::milliseconds(isBreak ? 200 : 150));
+                    this_thread::sleep_for(chrono::milliseconds(isBreak ? 180 : 110));
                 }
-                if(gt::is_auto_place_active && totalPlacedBlock >= 50) {
-                    totalPlacedBlock = 0;
+                
+                if (g_server->totalBlocksInInventory <= 0) {
+                    // TODO: - this possible make your account ``SUSPEND!!`` when no floating block on yourself
+                    // if this possible I will put this into vector, if you have any idea feel free
+                    // to comment about this
                     events::send::onSendCollectDropItem(*x, *y);
                 }
-                if (gt::is_auto_place_active) totalPlacedBlock++;
-            }
-            if (gt::is_auto_break_active && gt::is_auto_place_active) {
-                isBreak = !isBreak;
-            } else if (gt::is_auto_break_active) {
-                isBreak = true;
-            } else if (gt::is_auto_place_active) {
-                isBreak = false;
             }
         }
     }

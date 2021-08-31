@@ -52,12 +52,12 @@ namespace utils
     string toUpper(string str);
     string stripMessage(string msg);
     string getValueFromPattern(string from, string pattern);
-    string addPattern(string text);
-    string colorstr(string str);
+    string generateQuotes(string text);
+    string colorStr(string str);
     
     bool replace(std::string &str, const std::string &from, const std::string &to);
     bool isNumber(const std::string &s);
-    void saveUserInfo(string username, string password, string ownerName);
+    void saveUserInfo(string username, string password, string ownerName, int blockID);
     
     gameupdatepacket_t *getStruct(ENetPacket *packet);
     } // namespace utils

@@ -56,6 +56,7 @@ _________       ________________ ________ _______ ________
         gt::bot_name = getUserInfo["username"];
         gt::bot_password = getUserInfo["password"];
         gt::owner_name = getUserInfo["owner_name"];
+        gt::block_id = getUserInfo["block_id"];
         file.close();
     }
     cout << "- [+] Enter target world: ";
@@ -66,10 +67,7 @@ _________       ________________ ________ _______ ________
     getline(cin, gt::spam_text);
     cout << "- [+] Leave it blank if you won't break" << endl;
     cout << "- [+] Enter block id: ";
-//    cin.ignore();
-//    string bid;
-//    getline(cin, bid);
-    gt::block_id = 2; // atoi(bid.c_str());
+    cin >> gt::block_id;
     
     cout << R"(
 ============= [ YOUR BOT ACCOUNT DETAIL ] =============
@@ -92,7 +90,6 @@ badInput:
     
     cout << "- [+] Check your data when is right? [Y/n]: ";
     cin >> correctlyInput;
-    //    correctlyInput = "y";
     
     if (utils::toUpper(correctlyInput) == "N")
     {
@@ -105,7 +102,7 @@ badInput:
     }
     if (!isConfigurationFileExists)
     {
-        utils::saveUserInfo(gt::bot_name, gt::bot_password, gt::owner_name);
+        utils::saveUserInfo(gt::bot_name, gt::bot_password, gt::owner_name, gt::block_id);
     }
     
     system("clear");
@@ -120,7 +117,7 @@ badInput:
         int screenMaxY, screenMaxX;
         getmaxyx(stdscr, screenMaxY, screenMaxX);
         string botStatus = "OFFLINE";
-        
+
         WINDOW *creditWindow = newwin(5, 36, 2, 4);
         box(creditWindow, 0, 0);
         mvwprintw(creditWindow, 1, 1, "---=====[ GoGABOT v1.0.0 ]=====---");
@@ -132,13 +129,14 @@ badInput:
         box(win, 0, 0);
         box(statusWindow, 0, 0);
         keypad(win, TRUE);
-        
+
         Menu menus[] = {
             Menu("[+] SPAM"),
             Menu("[+] SPAM DELAY", 3500, 100, 3500 * 2,TYPE_NUMBER),
             Menu("[+] AUTO MESSAGE"),
             Menu("[+] FOLLOWING OWNER"),
             Menu("[+] FOLLOWING PUBLIC"),
+            Menu("[+] FOLLOWING THE CLOSEST"),
             Menu("[+] FOLLOWING PUNCH"),
             Menu("[+] AUTO BAN PEOPLE"),
             Menu("[+] AUTO COLLECT"),
@@ -148,7 +146,7 @@ badInput:
             Menu("[+] AUTO PLACE"),
             Menu("[+] EXIT", TYPE_DEFAULT),
         };
-        
+
         MenuBar menuBar = MenuBar(win, menus, sizeof(menus) / sizeof(menus[0]), 25);
         menuBar.drawMenu();
         

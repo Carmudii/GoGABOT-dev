@@ -22,6 +22,7 @@ namespace events
         void onSendMessagePacket();
         void onSendTileChangeRequestPacket();
         void onSendPacketMove(float posX, float posY, int characterState);
+        void onSendTileActiveRequest(int posX, int posY);
         bool onSendCollectDropItem(float posX, float posY);
         }; // namespace send
     }; // namespace events

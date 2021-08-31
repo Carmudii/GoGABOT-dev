@@ -9,10 +9,11 @@ class Player {
    public:
     string name{};
     string country{};
-    int netid = -1;
-    int userid = -1;
     vector2_t pos{};
     vector2_t lastPos{};
+    int netid = -1;
+    int userid = -1;
+    int packetFlag = -1;
     bool invis{};
     bool mod{};
     Player() {
