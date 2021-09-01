@@ -44,6 +44,7 @@ public:
     
     int m_user = 0;
     int m_token = 0;
+    int donationBoxPosition = -1;
     int droppedItemUID = -1;
     int droppedItemCounter = 0;
     int totalBlocksInInventory = 0;

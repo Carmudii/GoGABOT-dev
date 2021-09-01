@@ -256,7 +256,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "398"
             endingLineNumber = "398"
-            landmarkName = "events::send::onSendMapData(packet, packetLength)"
+            landmarkName = "events::send::onSendPacketMove(posX, posY, characterState)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

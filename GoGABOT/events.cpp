@@ -113,7 +113,14 @@ bool events::send::variantList(gameupdatepacket_t *packet)
                     g_server->send("action|dialog_return\ndialog_name|gazette");
                     return true;
                 } else if (content.find("add_label_with_icon|big|`wDonation Box") != -1) {
-                    if (content.find("The box is currently empty.") != -1) return true;
+                    if (content.find("The box is currently empty.") != -1) {
+                        if (g_server->donationBoxPosition == 1) {
+                            g_server->donationBoxPosition = -1;
+                        } else {
+                            g_server->donationBoxPosition++;
+                        }
+                        return true;
+                    }
                     int tilePosX = (int)(g_server->m_world.local.lastPos.m_x / 32);
                     int tilePosY = (int)ceil(g_server->m_world.local.lastPos.m_y / 32) - 2;
                     g_server->send("action|dialog_return\ndialog_name|donation_box_edit\ntilex|"+to_string(tilePosX)+"|\ntiley|"+to_string(tilePosY)+
@@ -518,7 +525,7 @@ void events::send::onSendTileChangeRequestPacket()
                 }
                 
                 if (!isBreak && g_server->totalBlocksInInventory <= 0) {
-                    packet.m_state1 = (int)(*x / 32);
+                    packet.m_state1 = (int)(*x / 32) + g_server->donationBoxPosition;
                     packet.m_state2 = (int)ceil(*y / 32) - 2;
                     packet.m_int_data = 32;
                     g_server->send(NET_MESSAGE_GAME_PACKET, (uint8_t*)&packet, sizeof(packet));
