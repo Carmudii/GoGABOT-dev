@@ -49,7 +49,7 @@ bool utils::isNumber(const string &s)
     return !s.empty() && find_if(s.begin() + (*s.data() == '-' ? 1 : 0), s.end(), [](char c) { return !isdigit(c); }) == s.end();
 }
 
-void utils::saveUserInfo(string username, string password, string ownerName, int blockID)
+void utils::saveUserInfo(string username, string password, string ownerName)
 {
     ofstream file;
     file.open(gt::configuration_file_name);
@@ -57,7 +57,6 @@ void utils::saveUserInfo(string username, string password, string ownerName, int
     userInfo["username"] = username;
     userInfo["password"] = password;
     userInfo["owner_name"] = ownerName;
-    userInfo["block_id"] = blockID;
     file << userInfo;
     file.close();
 }

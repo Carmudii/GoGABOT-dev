@@ -104,7 +104,6 @@ void server::eventHandle()
                                        packet->m_vec_x != 0 &&
                                        packet->m_vec_y != 0 &&
                                        packet->m_vec_y <= (m_world.local.lastPos.m_y - 32) &&
-                                       packet->m_vec_y >= (m_world.local.lastPos.m_y + 32) &&
                                        packet->m_vec_x >= (m_world.local.lastPos.m_x - 80) &&
                                        packet->m_vec_x <= (m_world.local.lastPos.m_x + 80))
                                     {
@@ -113,8 +112,8 @@ void server::eventHandle()
                                         events::send::onSendCollectDropItem(packet->m_vec_x, packet->m_vec_y);
                                     }
                                     if (gt::is_auto_drop && droppedItemCounter >= gt::max_dropped_block) {
-                                        droppedItemCounter = 0;
                                         send("action|drop\n|itemID|" + to_string(gt::block_id+1));
+                                        droppedItemCounter = 0;
                                     }
                                     enet_packet_destroy(event.packet);
                                     return;
@@ -134,7 +133,15 @@ void server::eventHandle()
                     } break;
                     case NET_MESSAGE_TRACK:
                     {
-                        events::send::onPlayerEnterGame();
+                        rtvar var = rtvar::parse(utils::getText(event.packet));
+                        string eventName = var.find("eventName")->m_value;
+                        if (eventName == "305_DONATIONBOX") {
+                            totalBlocksInInventory += var.get_int("itemamount");
+                            gt::block_id = var.get_int("item");
+                        } else {
+                            // We don't need to handle all tracking packet
+                            events::send::onPlayerEnterGame();
+                        }
                         enet_packet_destroy(event.packet);
                         return;
                     } break;
@@ -204,7 +211,6 @@ void server::reconnecting(bool reset)
 {
     gt::connecting = false;
     m_world.connected = false;
-    m_world.local = {};
     m_world.players.clear();
     DroppedItem.clear();
     if (m_server_peer)

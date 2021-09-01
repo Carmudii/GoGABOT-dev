@@ -56,7 +56,6 @@ _________       ________________ ________ _______ ________
         gt::bot_name = getUserInfo["username"];
         gt::bot_password = getUserInfo["password"];
         gt::owner_name = getUserInfo["owner_name"];
-        gt::block_id = getUserInfo["block_id"];
         file.close();
     }
     cout << "- [+] Enter target world: ";
@@ -65,9 +64,6 @@ _________       ________________ ________ _______ ________
     cout << "- [+] Enter spam text: ";
     cin.ignore();
     getline(cin, gt::spam_text);
-    cout << "- [+] Leave it blank if you won't break" << endl;
-    cout << "- [+] Enter block id: ";
-    cin >> gt::block_id;
     
     cout << R"(
 ============= [ YOUR BOT ACCOUNT DETAIL ] =============
@@ -81,8 +77,6 @@ _________       ________________ ________ _______ ________
     gt::bot_password + R"(
 - [+] Spam text    : )" +
     gt::spam_text + R"(
-- [+] Block Id     : )" +
-    to_string(gt::block_id) + R"(
 ============= [ YOUR BOT ACCOUNT DETAIL ] =============
 )";
     
@@ -102,7 +96,7 @@ badInput:
     }
     if (!isConfigurationFileExists)
     {
-        utils::saveUserInfo(gt::bot_name, gt::bot_password, gt::owner_name, gt::block_id);
+        utils::saveUserInfo(gt::bot_name, gt::bot_password, gt::owner_name);
     }
     
     system("clear");

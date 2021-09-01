@@ -57,7 +57,7 @@ namespace utils
     
     bool replace(std::string &str, const std::string &from, const std::string &to);
     bool isNumber(const std::string &s);
-    void saveUserInfo(string username, string password, string ownerName, int blockID);
+    void saveUserInfo(string username, string password, string ownerName);
     
     gameupdatepacket_t *getStruct(ENetPacket *packet);
     } // namespace utils

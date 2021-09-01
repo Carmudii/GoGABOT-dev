@@ -18,7 +18,7 @@ namespace gt
     extern string base_file_name;
     extern string item_defs_file_name;
 
-
+    extern int public_net_id;
     extern int owner_net_id;
     extern int safety_spam;
     /*********************** CONFIGURE MENU BOT ***********************/

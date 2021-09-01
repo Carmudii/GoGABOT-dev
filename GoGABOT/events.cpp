@@ -63,20 +63,10 @@ bool events::send::variantList(gameupdatepacket_t *packet)
             }
 
             if(stripText.find(">>Spam detected!") != -1) gt::safety_spam = 3;
-            if (stripText.find("[W]_") == -1) return true;
 
             /* ***************************************************** */
-
-
-            if (utils::toUpper(gt::owner_name) == utils::toUpper(utils::getValueFromPattern(stripText, "\\[W\\]_ <(.*) \\!"))) {
-                if (stripText.find("!follow") != -1) {
-                    gt::is_following_owner = !gt::is_following_owner;
-                } else if (stripText.find("!setMsg")) {
-                    std::vector<string> spamStr = utils::split(text, "!setMsg");
-                    gt::spam_text = !spamStr.empty() ? spamStr[1] : "CHEAP ITEM GO `2Z99";
-                }
-            }
             
+            // Auto ban
             if (gt::is_auto_ban && !playerName.empty() && (utils::toUpper(stripText).find("SELL") != -1 ||
                                                            utils::toUpper(stripText).find("GO ") != -1 ||
                                                            utils::toUpper(stripText).find("SCAM") != -1 ||
@@ -84,6 +74,25 @@ bool events::send::variantList(gameupdatepacket_t *packet)
                                                            utils::toUpper(stripText).find("SKEM") != -1))
             {
                 g_server->send("action|input\n|text|/ban " + playerName);
+            }
+            
+            // Auto accept access
+            if (stripText.find("Wrench yourself to accept.") != -1) {
+                string netID = to_string(g_server->m_world.local.netid);
+                g_server->send("action|wrench\n|netid|" + netID);
+                g_server->send("action|dialog_return\ndialog_name|popup\nnetID|"+ netID +"|\nbuttonClicked|acceptlock");
+                g_server->send("action|dialog_return\ndialog_name|acceptaccess");
+            }
+            
+            // Set Message
+            if (stripText.find("[W]_") == -1) return true;
+            if (utils::toUpper(gt::owner_name) == utils::toUpper(utils::getValueFromPattern(stripText, "\\[W\\]_ <(.*) \\!"))) {
+                if (stripText.find("!follow") != -1) {
+                    gt::is_following_owner = !gt::is_following_owner;
+                } else if (stripText.find("!setMsg")) {
+                    std::vector<string> spamStr = utils::split(text, "!setMsg");
+                    gt::spam_text = !spamStr.empty() ? spamStr[1] : "CHEAP ITEM GO `2Z99";
+                }
             }
 
             /* ***************************************************** */
@@ -100,14 +109,19 @@ bool events::send::variantList(gameupdatepacket_t *packet)
                 {
                     gt::solve_captcha(content);
                     return true;
-                } else
-                    if (content.find("add_label_with_icon|big|`wThe Growtopia Gazette") != -1)
-                    {
-                        g_server->send("action|dialog_return\ndialog_name|gazette");
-                        return true;
-                    }
+                } else if (content.find("add_label_with_icon|big|`wThe Growtopia Gazette") != -1) {
+                    g_server->send("action|dialog_return\ndialog_name|gazette");
+                    return true;
+                } else if (content.find("add_label_with_icon|big|`wDonation Box") != -1) {
+                    if (content.find("The box is currently empty.") != -1) return true;
+                    int tilePosX = (int)(g_server->m_world.local.lastPos.m_x / 32);
+                    int tilePosY = (int)ceil(g_server->m_world.local.lastPos.m_y / 32) - 2;
+                    g_server->send("action|dialog_return\ndialog_name|donation_box_edit\ntilex|"+to_string(tilePosX)+"|\ntiley|"+to_string(tilePosY)+
+                                   "|\nbuttonClicked|clear\n\ncheckbox|0");
+                    return true;
+                }
             }
-            if (gt::is_auto_drop && content.find("embed_data|itemID|") != -1 && content.find("Drop") != -1)
+            if (content.find("embed_data|itemID|") != -1 && content.find("Drop") != -1)
             {
                 string itemid = content.substr(content.find("embed_data|itemID|") + 18, content.length() - content.find("embed_data|itemID|") - 1);
                 string count = content.substr(content.find("count||") + 7, content.length() - content.find("count||") - 1);
@@ -132,6 +146,7 @@ bool events::send::variantList(gameupdatepacket_t *packet)
                     auto &player = players[i];
                     if (player.netid == netid)
                     {
+                        if (gt::public_net_id == netid) gt::public_net_id = 0;
                         players.erase(remove(players.begin(), players.end(), player), players.end());
                         break;
                     }
@@ -153,6 +168,8 @@ bool events::send::variantList(gameupdatepacket_t *packet)
                 if (utils::toUpper(gt::owner_name) == utils::toUpper(utils::stripMessage(name->m_value)))
                 {
                     gt::owner_net_id = var.get_int("netID");
+                } else if (!gt::public_net_id) {
+                    gt::public_net_id = var.get_int("netID");
                 }
                 
                 g_server->playerName.push_back(utils::stripMessage(name->m_value));
@@ -298,11 +315,8 @@ bool events::send::onState(gameupdatepacket_t *packet)
 {
     if (!g_server->m_world.connected)
         return false;
-    if (!gt::owner_net_id)
-    {
-        gt::owner_net_id = utils::getNetIDFromVector(&gt::owner_name);
-    }
-
+    if (!gt::owner_net_id) gt::owner_net_id = utils::getNetIDFromVector(&gt::owner_name);
+    
     if (gt::is_following_owner && packet->m_player_flags == gt::owner_net_id)
     {
         g_server->m_world.local.pos = vector2_t{packet->m_vec_x, packet->m_vec_y};
@@ -319,7 +333,7 @@ bool events::send::onState(gameupdatepacket_t *packet)
         }
         return false;
     }
-    else if (gt::is_following_public && packet->m_state1 == -1 && packet->m_state2 == -1 && g_server->inRange(packet->m_vec_x, packet->m_vec_y))
+    else if (gt::is_following_public && packet->m_state1 == -1 && packet->m_state2 == -1 && packet->m_player_flags == gt::public_net_id)
     {
         return gt::is_following_closest_player ? !g_server->inRange(packet->m_vec_x, packet->m_vec_y, 80, 80) : false;
     }
@@ -374,7 +388,7 @@ bool events::send::onSendMapData(gameupdatepacket_t *packet, long packetLength)
         g_server->setTargetWorld(gt::target_world_name);
     }
     
-    // we need to delete all allocation memory after used
+    // we need to clean up all allocation memory after used
     delete[] name;
     free(g_server->m_world.foreground);
     free(g_server->m_world.background);
@@ -503,11 +517,15 @@ void events::send::onSendTileChangeRequestPacket()
                     this_thread::sleep_for(chrono::milliseconds(isBreak ? 180 : 110));
                 }
                 
-                if (g_server->totalBlocksInInventory <= 0) {
-                    // TODO: - this possible make your account ``SUSPEND!!`` when no floating block on yourself
-                    // if this possible I will put this into vector, if you have any idea feel free
-                    // to comment about this
-                    events::send::onSendCollectDropItem(*x, *y);
+                if (!isBreak && g_server->totalBlocksInInventory <= 0) {
+                    packet.m_state1 = (int)(*x / 32);
+                    packet.m_state2 = (int)ceil(*y / 32) - 2;
+                    packet.m_int_data = 32;
+                    g_server->send(NET_MESSAGE_GAME_PACKET, (uint8_t*)&packet, sizeof(packet));
+                    if (g_server->droppedItemCounter > 0) {
+                        g_server->send("action|drop\n|itemID|" + to_string(gt::block_id+1));
+                        g_server->droppedItemCounter = 0;
+                    }
                 }
             }
         }
