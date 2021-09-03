@@ -24,5 +24,6 @@ namespace events
         void onSendPacketMove(float posX, float posY, int characterState);
         void onSendTileActiveRequest(int posX, int posY);
         bool onSendCollectDropItem(float posX, float posY);
+        bool onChangeObject(gameupdatepacket_t *packet);
         }; // namespace send
     }; // namespace events

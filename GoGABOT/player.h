@@ -10,7 +10,6 @@ class Player {
     string name{};
     string country{};
     vector2_t pos{};
-    vector2_t lastPos{};
     int netid = -1;
     int userid = -1;
     int packetFlag = -1;

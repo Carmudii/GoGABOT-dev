@@ -54,10 +54,11 @@ namespace utils
     string getValueFromPattern(string from, string pattern);
     string generateQuotes(string text);
     string colorStr(string str);
+    string split(string message, string command, int index);
     
     bool replace(std::string &str, const std::string &from, const std::string &to);
     bool isNumber(const std::string &s);
-    void saveUserInfo(string username, string password, string ownerName);
+    void saveUserInfo(string username, string password, string ownerName, int blockID);
     
     gameupdatepacket_t *getStruct(ENetPacket *packet);
     } // namespace utils

@@ -56,6 +56,7 @@ _________       ________________ ________ _______ ________
         gt::bot_name = getUserInfo["username"];
         gt::bot_password = getUserInfo["password"];
         gt::owner_name = getUserInfo["owner_name"];
+        gt::block_id = getUserInfo["block_id"];
         file.close();
     }
     cout << "- [+] Enter target world: ";
@@ -64,6 +65,9 @@ _________       ________________ ________ _______ ________
     cout << "- [+] Enter spam text: ";
     cin.ignore();
     getline(cin, gt::spam_text);
+    cout << "- [+] Leave it blank if you won't break" << endl;
+    cout << "- [+] Enter block id: ";
+    cin >> gt::block_id;
     
     cout << R"(
 ============= [ YOUR BOT ACCOUNT DETAIL ] =============
@@ -77,6 +81,8 @@ _________       ________________ ________ _______ ________
     gt::bot_password + R"(
 - [+] Spam text    : )" +
     gt::spam_text + R"(
+- [+] Block Id     : )" +
+    to_string(gt::block_id) + R"(
 ============= [ YOUR BOT ACCOUNT DETAIL ] =============
 )";
     
@@ -96,7 +102,7 @@ badInput:
     }
     if (!isConfigurationFileExists)
     {
-        utils::saveUserInfo(gt::bot_name, gt::bot_password, gt::owner_name);
+        utils::saveUserInfo(gt::bot_name, gt::bot_password, gt::owner_name, gt::block_id);
     }
     
     system("clear");
@@ -119,9 +125,7 @@ badInput:
         mvwprintw(creditWindow, 3, 9, "GoGABOT (c) 2021");
         wrefresh(creditWindow);
         WINDOW *win = newwin(20, 36, 7, 4);
-        WINDOW *statusWindow = newwin(20, 36, 22, 4);
         box(win, 0, 0);
-        box(statusWindow, 0, 0);
         keypad(win, TRUE);
 
         Menu menus[] = {
@@ -132,7 +136,8 @@ badInput:
             Menu("[+] FOLLOWING PUBLIC"),
             Menu("[+] FOLLOWING THE CLOSEST"),
             Menu("[+] FOLLOWING PUNCH"),
-            Menu("[+] AUTO BAN PEOPLE"),
+            Menu("[+] AUTO BAN SELLER"),
+            Menu("[+] AUTO BAN JOINED"),
             Menu("[+] AUTO COLLECT"),
             Menu("[+] AUTO DROP", 0, 50, 150, TYPE_NUMBER),
             Menu("[+] AUTO BREAK ON TOP"),
@@ -148,10 +153,16 @@ badInput:
         std::thread spamChat(events::send::onSendChatPacket);
         std::thread autoMsg(events::send::onSendMessagePacket);
         std::thread autoBreak(events::send::onSendTileChangeRequestPacket);
-        binKey.detach();
-        spamChat.detach();
-        autoMsg.detach();
-        autoBreak.detach();
+        if (spamChat.joinable() &&
+            autoMsg.joinable() &&
+            binKey.joinable() &&
+            autoBreak.joinable())
+        {
+            spamChat.detach();
+            autoMsg.detach();
+            binKey.detach();
+            autoBreak.detach();
+        }
         
         while (!gt::is_exit)
         {

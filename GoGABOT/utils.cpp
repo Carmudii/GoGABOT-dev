@@ -49,7 +49,7 @@ bool utils::isNumber(const string &s)
     return !s.empty() && find_if(s.begin() + (*s.data() == '-' ? 1 : 0), s.end(), [](char c) { return !isdigit(c); }) == s.end();
 }
 
-void utils::saveUserInfo(string username, string password, string ownerName)
+void utils::saveUserInfo(string username, string password, string ownerName, int blockID)
 {
     ofstream file;
     file.open(gt::configuration_file_name);
@@ -57,6 +57,7 @@ void utils::saveUserInfo(string username, string password, string ownerName)
     userInfo["username"] = username;
     userInfo["password"] = password;
     userInfo["owner_name"] = ownerName;
+    userInfo["block_id"] = blockID;
     file << userInfo;
     file.close();
 }
@@ -103,6 +104,10 @@ char *utils::getText(ENetPacket *packet)
     gametankpacket_t *tank = reinterpret_cast<gametankpacket_t *>(packet->data);
     memset(packet->data + packet->dataLength - 1, 0, 1);
     return static_cast<char *>(&tank->m_data);
+}
+
+string utils::split(string message, string command, int index) {
+    return message.substr(message.find(command) + command.length() + index, message.find(command));
 }
 
 string utils::toUpper(string str)

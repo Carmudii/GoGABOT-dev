@@ -36,6 +36,7 @@
 		FA83358F26CAB5A800DE58D2 /* libncurses.5.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83358C26CAB5A700DE58D2 /* libncurses.5.tbd */; };
 		FA83359026CAB5A800DE58D2 /* libncurses.5.4.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83358D26CAB5A700DE58D2 /* libncurses.5.4.tbd */; };
 		FA83359126CAB5A800DE58D2 /* libncurses.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83358E26CAB5A800DE58D2 /* libncurses.tbd */; };
+		FACFAB0526E0FFA60088E678 /* playerInventory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACFAB0426E0FFA50088E678 /* playerInventory.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -85,6 +86,8 @@
 		FA83358C26CAB5A700DE58D2 /* libncurses.5.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.5.tbd; path = usr/lib/libncurses.5.tbd; sourceTree = SDKROOT; };
 		FA83358D26CAB5A700DE58D2 /* libncurses.5.4.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.5.4.tbd; path = usr/lib/libncurses.5.4.tbd; sourceTree = SDKROOT; };
 		FA83358E26CAB5A800DE58D2 /* libncurses.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.tbd; path = usr/lib/libncurses.tbd; sourceTree = SDKROOT; };
+		FACFAB0226E08EBF0088E678 /* playerInventory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = playerInventory.h; sourceTree = "<group>"; };
+		FACFAB0426E0FFA50088E678 /* playerInventory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = playerInventory.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +142,8 @@
 				FA83355326CA1CB300DE58D2 /* json.hpp */,
 				FA83355026CA1CB200DE58D2 /* packet.h */,
 				FA83354726CA1CB200DE58D2 /* player.h */,
+				FACFAB0426E0FFA50088E678 /* playerInventory.cpp */,
+				FACFAB0226E08EBF0088E678 /* playerInventory.h */,
 				FA83355626CA1CB300DE58D2 /* README.md */,
 				FA83354C26CA1CB200DE58D2 /* server.cpp */,
 				FA83354826CA1CB200DE58D2 /* server.h */,
@@ -254,6 +259,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA83357526CA24C500DE58D2 /* sandbird.c in Sources */,
+				FACFAB0526E0FFA60088E678 /* playerInventory.cpp in Sources */,
 				FA83357626CA24C500DE58D2 /* callbacks.c in Sources */,
 				FA31A3D226D091E500CD010E /* world.cpp in Sources */,
 				FA83357726CA24C500DE58D2 /* host.c in Sources */,

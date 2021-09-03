@@ -207,6 +207,10 @@ public:
             {
                 case 1:
                     gt::is_spam_active = isActiveMenu;
+                    if (isActiveMenu) {
+                        g_server->adminNetID.clear();
+                        gt::is_admin_entered = false;
+                    }
                     break;
                 case 2:
                     gt::spam_delay = valueOfActiveMenu;
@@ -231,20 +235,23 @@ public:
                     gt::is_auto_ban = isActiveMenu;
                     break;
                 case 9:
-                    gt::is_auto_collect = isActiveMenu;
+                    gt::is_auto_ban_joined = isActiveMenu;
                     break;
                 case 10:
+                    gt::is_auto_collect = isActiveMenu;
+                    break;
+                case 11:
                     gt::is_auto_drop = valueOfActiveMenu > 0;
                     gt::max_dropped_block = valueOfActiveMenu;
                     break;
-                case 11:
+                case 12:
                     gt::is_auto_break_active = isActiveMenu;
                     gt::is_use_tile = isActiveMenu ? isActiveMenu : gt::is_auto_place_active;
                     break;
-                case 12:
+                case 13:
                     gt::hit_per_block = valueOfActiveMenu;
                     break;
-                case 13:
+                case 14:
                     gt::is_auto_place_active = isActiveMenu;
                     gt::is_use_tile = isActiveMenu ? isActiveMenu : gt::is_auto_break_active;
                     break;
@@ -253,7 +260,6 @@ public:
                     break;
             }
             g_server->cv.notify_all();
-            std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
     }
 };
