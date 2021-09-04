@@ -51,14 +51,13 @@ public:
     void setTargetWorld(string worldName);
     void reconnecting(bool reset);
         
-    mutex mtx_break_function;
-
     string m_doorID = "";
     string m_server = "213.179.209.168";
     string getServerStatus();
     World m_world;
     PlayerInventory playerInventory;
     vector2_t lastPos{};
+    int donationBoxPosition = 0;
 };
 
 extern server *g_server;

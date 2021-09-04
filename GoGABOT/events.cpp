@@ -137,9 +137,11 @@ bool events::send::variantList(gameupdatepacket_t *packet)
                             this_thread::sleep_for(chrono::seconds(2));
                             g_server->send("action|drop\n|itemID|" + to_string(gt::block_id+1));
                         }
+                        g_server->donationBoxPosition++;
+                        if (g_server->donationBoxPosition == 3) g_server->donationBoxPosition = 0;
                         return true;
                     }
-                    int tilePosX = (int)(g_server->lastPos.m_x / 32);
+                    int tilePosX = ((int)(g_server->lastPos.m_x / 32) - 1) + g_server->donationBoxPosition;
                     int tilePosY = (int)ceil(g_server->lastPos.m_y / 32) - 2;
                     g_server->send("action|dialog_return\ndialog_name|donation_box_edit\ntilex|"+to_string(tilePosX)+"|\ntiley|"+to_string(tilePosY)+
                                    "|\nbuttonClicked|clear\n\ncheckbox|0");
@@ -402,12 +404,15 @@ bool events::send::onChangeObject(gameupdatepacket_t *packet) {
         if(gt::is_auto_collect &&
            packet->m_vec_x != 0 &&
            packet->m_vec_y != 0 &&
-           packet->m_vec_y <= (g_server->lastPos.m_y - 32) &&
+           packet->m_vec_y <= (g_server->lastPos.m_y - 30) &&
            packet->m_vec_y >= (g_server->lastPos.m_y - 70) &&
-           packet->m_vec_x >= (g_server->lastPos.m_x - 80) &&
-           packet->m_vec_x <= (g_server->lastPos.m_x + 80))
+           packet->m_vec_x >= (g_server->lastPos.m_x - 82) &&
+           packet->m_vec_x <= (g_server->lastPos.m_x + 82))
         {
             events::send::onSendCollectDropItem(packet->m_vec_x, packet->m_vec_y);
+            if (packet->m_int_data != gt::block_id && packet->m_int_data != gt::block_id+1 && packet->m_int_data != 112) {
+                g_server->send("action|trash\n|itemID|" + to_string(packet->m_int_data));
+            }
         }
         if (gt::is_auto_drop && g_server->playerInventory.getTotalDroppedItem() >= gt::max_dropped_block) {
             g_server->send("action|drop\n|itemID|" + to_string(gt::block_id+1));
@@ -579,23 +584,18 @@ void events::send::onSendTileChangeRequestPacket()
             packet.m_int_data = isBreak ? 18 : gt::block_id;
             for (int i = 1; i <= 5; i++)
             {
-                lock_guard<mutex> lock(g_server->mtx_break_function);
                 packet.m_state1++;
-                if (isBreak) {
-                    for(int counterHit = 1; counterHit <= gt::hit_per_block; counterHit++) {
-                        g_server->send(NET_MESSAGE_GAME_PACKET, (uint8_t*)&packet, sizeof(packet));
-                        this_thread::sleep_for(chrono::milliseconds(180));
-                    }
-                } else {
+                for(int counterHit = 1; counterHit <= (isBreak ? gt::hit_per_block : 3); counterHit++) {
                     g_server->send(NET_MESSAGE_GAME_PACKET, (uint8_t*)&packet, sizeof(packet));
-                    this_thread::sleep_for(chrono::milliseconds(110));
-                    if (g_server->playerInventory.getTotalCurrentBlock() <= 0) {
-                        packet.m_state1 = (int)(*x / 32);// + g_server->donationBoxPosition;
-                        packet.m_state2 = (int)ceil(*y / 32) - 2;
-                        packet.m_int_data = 32;
-                        g_server->send(NET_MESSAGE_GAME_PACKET, (uint8_t*)&packet, sizeof(packet));
-                    }
+                    this_thread::sleep_for(chrono::milliseconds(isBreak ? 180 : 110));
                 }
+            }
+            
+            if (g_server->playerInventory.getTotalCurrentBlock() <= 0) {
+                packet.m_state1 = ((int)(*x / 32) - 1) + g_server->donationBoxPosition;
+                packet.m_state2 = (int)ceil(*y / 32) - 2;
+                packet.m_int_data = 32;
+                g_server->send(NET_MESSAGE_GAME_PACKET, (uint8_t*)&packet, sizeof(packet));
             }
         }
     }

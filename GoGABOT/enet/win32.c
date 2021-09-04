@@ -5,11 +5,9 @@
 #ifdef _WIN32
 
 #define ENET_BUILDING_LIB 1
-#include "include/enet.h"
+#include "enet/enet.h"
 #include <windows.h>
 #include <mmsystem.h>
-
-#pragma warning(disable : 4996)
 
 static enet_uint32 timeBase = 0;
 
@@ -318,7 +316,7 @@ enet_socket_send (ENetSocket socket,
                   size_t bufferCount)
 {
     struct sockaddr_in sin;
-    DWORD sentLength;
+    DWORD sentLength = 0;
 
     if (address != NULL)
     {
@@ -356,7 +354,7 @@ enet_socket_receive (ENetSocket socket,
 {
     INT sinLength = sizeof (struct sockaddr_in);
     DWORD flags = 0,
-          recvLength;
+          recvLength = 0;
     struct sockaddr_in sin;
 
     if (WSARecvFrom (socket,
