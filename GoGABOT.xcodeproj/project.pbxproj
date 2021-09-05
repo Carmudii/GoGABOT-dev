@@ -7,35 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		FA31A3D226D091E500CD010E /* world.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA31A3D126D091E500CD010E /* world.cpp */; };
-		FA83353C26CA1BEC00DE58D2 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA83353B26CA1BEC00DE58D2 /* main.cpp */; };
-		FA83355726CA1CB300DE58D2 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA83354426CA1CB200DE58D2 /* utils.cpp */; };
-		FA83355826CA1CB300DE58D2 /* gt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA83354526CA1CB200DE58D2 /* gt.cpp */; };
-		FA83355926CA1CB300DE58D2 /* events.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA83354926CA1CB200DE58D2 /* events.cpp */; };
-		FA83355A26CA1CB300DE58D2 /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA83354C26CA1CB200DE58D2 /* server.cpp */; };
-		FA83357526CA24C500DE58D2 /* sandbird.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83357226CA237900DE58D2 /* sandbird.c */; };
-		FA83357626CA24C500DE58D2 /* callbacks.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83356226CA235500DE58D2 /* callbacks.c */; };
-		FA83357726CA24C500DE58D2 /* host.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83356526CA235500DE58D2 /* host.c */; };
-		FA83357826CA24C500DE58D2 /* list.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83356926CA235500DE58D2 /* list.c */; };
-		FA83357926CA24C500DE58D2 /* packet.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83356326CA235500DE58D2 /* packet.c */; };
-		FA83357A26CA24C500DE58D2 /* peer.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83356726CA235500DE58D2 /* peer.c */; };
-		FA83357B26CA24C500DE58D2 /* protocol.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83356426CA235500DE58D2 /* protocol.c */; };
-		FA83357C26CA24C500DE58D2 /* unix.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83356626CA235500DE58D2 /* unix.c */; };
-		FA83357D26CA24C500DE58D2 /* win32.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83356826CA235500DE58D2 /* win32.c */; };
-		FA83357E26CA24C500DE58D2 /* compress.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83356026CA231600DE58D2 /* compress.c */; };
-		FA83357F26CA25E300DE58D2 /* callbacks.c in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83356226CA235500DE58D2 /* callbacks.c */; };
-		FA83358026CA25E300DE58D2 /* compress.c in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83356026CA231600DE58D2 /* compress.c */; };
-		FA83358126CA25E300DE58D2 /* host.c in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83356526CA235500DE58D2 /* host.c */; };
-		FA83358226CA25E300DE58D2 /* list.c in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83356926CA235500DE58D2 /* list.c */; };
-		FA83358326CA25E300DE58D2 /* packet.c in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83356326CA235500DE58D2 /* packet.c */; };
-		FA83358426CA25E300DE58D2 /* peer.c in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83356726CA235500DE58D2 /* peer.c */; };
-		FA83358526CA25E300DE58D2 /* protocol.c in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83356426CA235500DE58D2 /* protocol.c */; };
-		FA83358626CA25E300DE58D2 /* unix.c in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83356626CA235500DE58D2 /* unix.c */; };
-		FA83358726CA25E300DE58D2 /* win32.c in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83356826CA235500DE58D2 /* win32.c */; };
-		FA83358826CA25F600DE58D2 /* sandbird.c in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83357226CA237900DE58D2 /* sandbird.c */; };
 		FA83358F26CAB5A800DE58D2 /* libncurses.5.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83358C26CAB5A700DE58D2 /* libncurses.5.tbd */; };
 		FA83359026CAB5A800DE58D2 /* libncurses.5.4.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83358D26CAB5A700DE58D2 /* libncurses.5.4.tbd */; };
 		FA83359126CAB5A800DE58D2 /* libncurses.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA83358E26CAB5A800DE58D2 /* libncurses.tbd */; };
+		FAEAFD3426E37777003DACB2 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA83353B26CA1BEC00DE58D2 /* main.cpp */; };
+		FAEAFD3526E37777003DACB2 /* events.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA83354926CA1CB200DE58D2 /* events.cpp */; };
+		FAEAFD3626E37777003DACB2 /* gt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA83354526CA1CB200DE58D2 /* gt.cpp */; };
+		FAEAFD3726E37777003DACB2 /* playerInventory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACFAB0426E0FFA50088E678 /* playerInventory.cpp */; };
+		FAEAFD3826E37777003DACB2 /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA83354C26CA1CB200DE58D2 /* server.cpp */; };
+		FAEAFD3926E37778003DACB2 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA83354426CA1CB200DE58D2 /* utils.cpp */; };
+		FAEAFD3A26E37778003DACB2 /* world.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA31A3D126D091E500CD010E /* world.cpp */; };
+		FAEAFD4A26E377D6003DACB2 /* host.c in Sources */ = {isa = PBXBuildFile; fileRef = FAEAFD4126E377D1003DACB2 /* host.c */; };
+		FAEAFD4B26E377D6003DACB2 /* callbacks.c in Sources */ = {isa = PBXBuildFile; fileRef = FAEAFD4226E377D2003DACB2 /* callbacks.c */; };
+		FAEAFD4C26E377D6003DACB2 /* compress.c in Sources */ = {isa = PBXBuildFile; fileRef = FAEAFD4326E377D2003DACB2 /* compress.c */; };
+		FAEAFD4D26E377D6003DACB2 /* protocol.c in Sources */ = {isa = PBXBuildFile; fileRef = FAEAFD4426E377D2003DACB2 /* protocol.c */; };
+		FAEAFD4E26E377D6003DACB2 /* unix.c in Sources */ = {isa = PBXBuildFile; fileRef = FAEAFD4526E377D3003DACB2 /* unix.c */; };
+		FAEAFD4F26E377D6003DACB2 /* packet.c in Sources */ = {isa = PBXBuildFile; fileRef = FAEAFD4626E377D3003DACB2 /* packet.c */; };
+		FAEAFD5026E377D6003DACB2 /* list.c in Sources */ = {isa = PBXBuildFile; fileRef = FAEAFD4726E377D4003DACB2 /* list.c */; };
+		FAEAFD5126E377D6003DACB2 /* peer.c in Sources */ = {isa = PBXBuildFile; fileRef = FAEAFD4826E377D5003DACB2 /* peer.c */; };
+		FAEAFD5226E377D6003DACB2 /* win32.c in Sources */ = {isa = PBXBuildFile; fileRef = FAEAFD4926E377D5003DACB2 /* win32.c */; };
+		FAEAFD5426E377FA003DACB2 /* sandbird.c in Sources */ = {isa = PBXBuildFile; fileRef = FAEAFD5326E377F9003DACB2 /* sandbird.c */; };
+		FAEAFD5626E3780D003DACB2 /* menu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAEAFD5526E3780C003DACB2 /* menu.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -85,6 +77,21 @@
 		FA83358C26CAB5A700DE58D2 /* libncurses.5.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.5.tbd; path = usr/lib/libncurses.5.tbd; sourceTree = SDKROOT; };
 		FA83358D26CAB5A700DE58D2 /* libncurses.5.4.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.5.4.tbd; path = usr/lib/libncurses.5.4.tbd; sourceTree = SDKROOT; };
 		FA83358E26CAB5A800DE58D2 /* libncurses.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.tbd; path = usr/lib/libncurses.tbd; sourceTree = SDKROOT; };
+		FACFAB0226E08EBF0088E678 /* playerInventory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = playerInventory.h; sourceTree = "<group>"; };
+		FACFAB0426E0FFA50088E678 /* playerInventory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = playerInventory.cpp; sourceTree = "<group>"; };
+		FAEAFD2D26E3731B003DACB2 /* menu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = menu.cpp; path = GoGABOT/Ui/menu.cpp; sourceTree = "<group>"; };
+		FAEAFD2E26E376F0003DACB2 /* menu.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = menu.c; path = GoGABOT/Ui/menu.c; sourceTree = "<group>"; };
+		FAEAFD4126E377D1003DACB2 /* host.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = host.c; path = GoGABOT/enet/host.c; sourceTree = "<group>"; };
+		FAEAFD4226E377D2003DACB2 /* callbacks.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = callbacks.c; path = GoGABOT/enet/callbacks.c; sourceTree = "<group>"; };
+		FAEAFD4326E377D2003DACB2 /* compress.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = compress.c; path = GoGABOT/enet/compress.c; sourceTree = "<group>"; };
+		FAEAFD4426E377D2003DACB2 /* protocol.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = protocol.c; path = GoGABOT/enet/protocol.c; sourceTree = "<group>"; };
+		FAEAFD4526E377D3003DACB2 /* unix.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = unix.c; path = GoGABOT/enet/unix.c; sourceTree = "<group>"; };
+		FAEAFD4626E377D3003DACB2 /* packet.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = packet.c; path = GoGABOT/enet/packet.c; sourceTree = "<group>"; };
+		FAEAFD4726E377D4003DACB2 /* list.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = list.c; path = GoGABOT/enet/list.c; sourceTree = "<group>"; };
+		FAEAFD4826E377D5003DACB2 /* peer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = peer.c; path = GoGABOT/enet/peer.c; sourceTree = "<group>"; };
+		FAEAFD4926E377D5003DACB2 /* win32.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = win32.c; path = GoGABOT/enet/win32.c; sourceTree = "<group>"; };
+		FAEAFD5326E377F9003DACB2 /* sandbird.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = sandbird.c; path = GoGABOT/sandbird/sandbird.c; sourceTree = "<group>"; };
+		FAEAFD5526E3780C003DACB2 /* menu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = menu.cpp; path = GoGABOT/Ui/menu.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,16 +102,6 @@
 				FA83358F26CAB5A800DE58D2 /* libncurses.5.tbd in Frameworks */,
 				FA83359026CAB5A800DE58D2 /* libncurses.5.4.tbd in Frameworks */,
 				FA83359126CAB5A800DE58D2 /* libncurses.tbd in Frameworks */,
-				FA83358826CA25F600DE58D2 /* sandbird.c in Frameworks */,
-				FA83357F26CA25E300DE58D2 /* callbacks.c in Frameworks */,
-				FA83358026CA25E300DE58D2 /* compress.c in Frameworks */,
-				FA83358126CA25E300DE58D2 /* host.c in Frameworks */,
-				FA83358226CA25E300DE58D2 /* list.c in Frameworks */,
-				FA83358326CA25E300DE58D2 /* packet.c in Frameworks */,
-				FA83358426CA25E300DE58D2 /* peer.c in Frameworks */,
-				FA83358526CA25E300DE58D2 /* protocol.c in Frameworks */,
-				FA83358626CA25E300DE58D2 /* unix.c in Frameworks */,
-				FA83358726CA25E300DE58D2 /* win32.c in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -114,6 +111,17 @@
 		FA83352F26CA1BEC00DE58D2 = {
 			isa = PBXGroup;
 			children = (
+				FAEAFD5526E3780C003DACB2 /* menu.cpp */,
+				FAEAFD5326E377F9003DACB2 /* sandbird.c */,
+				FAEAFD4226E377D2003DACB2 /* callbacks.c */,
+				FAEAFD4326E377D2003DACB2 /* compress.c */,
+				FAEAFD4126E377D1003DACB2 /* host.c */,
+				FAEAFD4726E377D4003DACB2 /* list.c */,
+				FAEAFD4626E377D3003DACB2 /* packet.c */,
+				FAEAFD4826E377D5003DACB2 /* peer.c */,
+				FAEAFD4426E377D2003DACB2 /* protocol.c */,
+				FAEAFD4526E377D3003DACB2 /* unix.c */,
+				FAEAFD4926E377D5003DACB2 /* win32.c */,
 				FA83353A26CA1BEC00DE58D2 /* GoGABOT */,
 				FA83353926CA1BEC00DE58D2 /* Products */,
 				FA83355F26CA231600DE58D2 /* Frameworks */,
@@ -139,6 +147,8 @@
 				FA83355326CA1CB300DE58D2 /* json.hpp */,
 				FA83355026CA1CB200DE58D2 /* packet.h */,
 				FA83354726CA1CB200DE58D2 /* player.h */,
+				FACFAB0426E0FFA50088E678 /* playerInventory.cpp */,
+				FACFAB0226E08EBF0088E678 /* playerInventory.h */,
 				FA83355626CA1CB300DE58D2 /* README.md */,
 				FA83354C26CA1CB200DE58D2 /* server.cpp */,
 				FA83354826CA1CB200DE58D2 /* server.h */,
@@ -158,6 +168,8 @@
 		FA83355F26CA231600DE58D2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FAEAFD2E26E376F0003DACB2 /* menu.c */,
+				FAEAFD2D26E3731B003DACB2 /* menu.cpp */,
 				FA83358D26CAB5A700DE58D2 /* libncurses.5.4.tbd */,
 				FA83358C26CAB5A700DE58D2 /* libncurses.5.tbd */,
 				FA83358E26CAB5A800DE58D2 /* libncurses.tbd */,
@@ -253,22 +265,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA83357526CA24C500DE58D2 /* sandbird.c in Sources */,
-				FA83357626CA24C500DE58D2 /* callbacks.c in Sources */,
-				FA31A3D226D091E500CD010E /* world.cpp in Sources */,
-				FA83357726CA24C500DE58D2 /* host.c in Sources */,
-				FA83357826CA24C500DE58D2 /* list.c in Sources */,
-				FA83357926CA24C500DE58D2 /* packet.c in Sources */,
-				FA83357A26CA24C500DE58D2 /* peer.c in Sources */,
-				FA83357B26CA24C500DE58D2 /* protocol.c in Sources */,
-				FA83357C26CA24C500DE58D2 /* unix.c in Sources */,
-				FA83357D26CA24C500DE58D2 /* win32.c in Sources */,
-				FA83357E26CA24C500DE58D2 /* compress.c in Sources */,
-				FA83355926CA1CB300DE58D2 /* events.cpp in Sources */,
-				FA83355826CA1CB300DE58D2 /* gt.cpp in Sources */,
-				FA83353C26CA1BEC00DE58D2 /* main.cpp in Sources */,
-				FA83355A26CA1CB300DE58D2 /* server.cpp in Sources */,
-				FA83355726CA1CB300DE58D2 /* utils.cpp in Sources */,
+				FAEAFD5626E3780D003DACB2 /* menu.cpp in Sources */,
+				FAEAFD5426E377FA003DACB2 /* sandbird.c in Sources */,
+				FAEAFD4A26E377D6003DACB2 /* host.c in Sources */,
+				FAEAFD4B26E377D6003DACB2 /* callbacks.c in Sources */,
+				FAEAFD4C26E377D6003DACB2 /* compress.c in Sources */,
+				FAEAFD4D26E377D6003DACB2 /* protocol.c in Sources */,
+				FAEAFD4E26E377D6003DACB2 /* unix.c in Sources */,
+				FAEAFD4F26E377D6003DACB2 /* packet.c in Sources */,
+				FAEAFD5026E377D6003DACB2 /* list.c in Sources */,
+				FAEAFD5126E377D6003DACB2 /* peer.c in Sources */,
+				FAEAFD5226E377D6003DACB2 /* win32.c in Sources */,
+				FAEAFD3426E37777003DACB2 /* main.cpp in Sources */,
+				FAEAFD3526E37777003DACB2 /* events.cpp in Sources */,
+				FAEAFD3626E37777003DACB2 /* gt.cpp in Sources */,
+				FAEAFD3726E37777003DACB2 /* playerInventory.cpp in Sources */,
+				FAEAFD3826E37777003DACB2 /* server.cpp in Sources */,
+				FAEAFD3926E37778003DACB2 /* utils.cpp in Sources */,
+				FAEAFD3A26E37778003DACB2 /* world.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

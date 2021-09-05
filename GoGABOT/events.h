@@ -1,4 +1,4 @@
-#pragma once
+#pragma Once
 
 #include <string>
 #include "packet.h"
@@ -9,20 +9,21 @@ namespace events
     {
     namespace send
         {
-        bool variantList(gameupdatepacket_t *packet);
-        bool onPingReply(gameupdatepacket_t *packet);
-        bool onGenericText(string packet);
-        bool onGameMessage(string packet);
-        bool onState(gameupdatepacket_t *packet);
-        void onLoginRequest();
-        void onPlayerEnterGame();
-        bool onSendMapData(gameupdatepacket_t *packet, long packetLength);
-        void onSendChatPacket();
-        void onSendPlacePacket();
-        void onSendMessagePacket();
-        void onSendTileChangeRequestPacket();
-        void onSendPacketMove(float posX, float posY, int characterState);
-        void onSendTileActiveRequest(int posX, int posY);
-        bool onSendCollectDropItem(float posX, float posY);
+        bool VariantList(gameupdatepacket_t *packet);
+        bool OnPingReply(gameupdatepacket_t *packet);
+        bool OnGenericText(string packet);
+        bool OnGameMessage(string packet);
+        bool OnState(gameupdatepacket_t *packet);
+        void OnLoginRequest();
+        void OnPlayerEnterGame();
+        bool OnSendMapData(gameupdatepacket_t *packet, long packetLength);
+        void OnSendChatPacket();
+        void OnSendPlacePacket();
+        void OnSendMessagePacket();
+        void OnSendTileChangeRequestPacket();
+        void OnSendPacketMove(float posX, float posY, int characterState);
+        void OnSendTileActiveRequest(int posX, int posY);
+        bool OnSendCollectDropItem(float posX, float posY);
+        bool OnChangeObject(gameupdatepacket_t *packet);
         }; // namespace send
     }; // namespace events

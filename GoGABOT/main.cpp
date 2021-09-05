@@ -1,4 +1,3 @@
-#include <ncurses.h>
 #include <ctime>
 #include <iomanip>
 #include <iostream>
@@ -8,7 +7,6 @@
 #include <fstream>
 #include "enet/include/enet.h"
 #include "server.h"
-#include "Ui/menu.h"
 #include "gt.hpp"
 #include "utils.h"
 #include "json.hpp"
@@ -124,40 +122,50 @@ badInput:
         mvwprintw(creditWindow, 2, 4, "BOT made bY 9GATE-Comunity");
         mvwprintw(creditWindow, 3, 9, "GoGABOT (c) 2021");
         wrefresh(creditWindow);
-        WINDOW *win = newwin(20, 36, 7, 4);
-        WINDOW *statusWindow = newwin(20, 36, 22, 4);
+        WINDOW *win = newwin(21, 36, 7, 4);
         box(win, 0, 0);
-        box(statusWindow, 0, 0);
         keypad(win, TRUE);
-
-        Menu menus[] = {
-            Menu("[+] SPAM"),
-            Menu("[+] SPAM DELAY", 3500, 100, 3500 * 2,TYPE_NUMBER),
-            Menu("[+] AUTO MESSAGE"),
-            Menu("[+] FOLLOWING OWNER"),
-            Menu("[+] FOLLOWING PUBLIC"),
-            Menu("[+] FOLLOWING THE CLOSEST"),
-            Menu("[+] FOLLOWING PUNCH"),
-            Menu("[+] AUTO BAN PEOPLE"),
-            Menu("[+] AUTO COLLECT"),
-            Menu("[+] AUTO DROP", 0, 50, 150, TYPE_NUMBER),
-            Menu("[+] AUTO BREAK ON TOP"),
-            Menu("[+] HIT PER BLOCK", 1, 1, 20, TYPE_NUMBER),
-            Menu("[+] AUTO PLACE"),
-            Menu("[+] EXIT", TYPE_DEFAULT),
+        
+        MenuStruct menus[] = {
+            MenuStruct("[+] SPAM"),
+            MenuStruct("[+] SPAM DELAY", 3500, 100, 3500 * 2,TYPE_NUMBER),
+            MenuStruct("[+] AUTO MESSAGE"),
+            MenuStruct("[+] FOLLOWING OWNER"),
+            MenuStruct("[+] FOLLOWING PUBLIC"),
+            MenuStruct("[+] FOLLOWING THE CLOSEST"),
+            MenuStruct("[+] FOLLOWING PUNCH"),
+            MenuStruct("[+] AUTO BAN SELLER"),
+            MenuStruct("[+] AUTO BAN JOINED"),
+            MenuStruct("[+] AUTO COLLECT"),
+            MenuStruct("[+] AUTO DROP", 0, 50, 150, TYPE_NUMBER),
+            MenuStruct("[+] AUTO BREAK ON TOP"),
+            MenuStruct("[+] HIT PER BLOCK", 1, 1, 20, TYPE_NUMBER),
+            MenuStruct("[+] AUTO PLACE"),
+            MenuStruct("[+] EXIT", TYPE_DEFAULT),
         };
 
-        MenuBar menuBar = MenuBar(win, menus, sizeof(menus) / sizeof(menus[0]), 25);
+        MenuBar menuBar = MenuBar(win, menus, sizeof(menus) / sizeof(menus[0]), 27);
+        menuBar.win = win;
         menuBar.drawMenu();
         
+        MenuBar::refreshStatusWindow(TYPE_NAME);
+        MenuBar::refreshStatusWindow(TYPE_WORLD);
+        MenuBar::refreshStatusWindow(TYPE_BOTTOM);
+        
         std::thread binKey(&MenuBar::bindingKey, &menuBar);
-        std::thread spamChat(events::send::onSendChatPacket);
-        std::thread autoMsg(events::send::onSendMessagePacket);
-        std::thread autoBreak(events::send::onSendTileChangeRequestPacket);
-        binKey.detach();
-        spamChat.detach();
-        autoMsg.detach();
-        autoBreak.detach();
+        std::thread spamChat(events::send::OnSendChatPacket);
+        std::thread autoMsg(events::send::OnSendMessagePacket);
+        std::thread autoBreak(events::send::OnSendTileChangeRequestPacket);
+        if (spamChat.joinable() &&
+            autoMsg.joinable() &&
+            binKey.joinable() &&
+            autoBreak.joinable())
+        {
+            spamChat.detach();
+            autoMsg.detach();
+            binKey.detach();
+            autoBreak.detach();
+        }
         
         while (!gt::is_exit)
         {

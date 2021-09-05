@@ -18,7 +18,7 @@ namespace gt
     extern string base_file_name;
     extern string item_defs_file_name;
 
-
+    extern int public_net_id;
     extern int owner_net_id;
     extern int safety_spam;
     /*********************** CONFIGURE MENU BOT ***********************/
@@ -27,7 +27,7 @@ namespace gt
     extern int block_id;
     extern int max_dropped_block;
     /*********************** CONFIGURE MENU BOT ***********************/
-
+    extern bool is_admin_entered;
     extern bool connecting;
     extern bool in_game;
     /*********************** CONFIGURE MENU BOT ***********************/
@@ -43,6 +43,7 @@ namespace gt
     extern bool is_following_closest_player;
     extern bool is_following_punch;
     extern bool is_auto_ban;
+    extern bool is_auto_ban_joined;
     extern bool is_owner_command;
     extern bool is_exit;
     extern bool is_activated_auto_message;

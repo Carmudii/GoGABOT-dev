@@ -35,6 +35,7 @@ public:
     string name{};
     vector<Player> players{};
     Player local{};
+
     bool connected{};
     bool requiresTileExtra(int id);
     bool isSpecialTile(int id);

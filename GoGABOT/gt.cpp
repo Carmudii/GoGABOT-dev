@@ -17,6 +17,7 @@ string gt::bot_name                  = "";
 string gt::bot_password              = "";
 string gt::spam_text                 = "";
 
+int gt::public_net_id                = 0;
 int gt::owner_net_id                 = 0;
 int gt::spam_delay                   = 3500;
 int gt::hit_per_block                = 1;
@@ -24,6 +25,7 @@ int gt::block_id                     = 0;
 int gt::safety_spam                  = 0;
 int gt::max_dropped_block            = 0;
 
+bool gt::is_admin_entered            = false;
 bool gt::connecting                  = false;
 bool gt::in_game                     = false;
 bool gt::is_following_owner          = false;
@@ -31,6 +33,7 @@ bool gt::is_following_public         = false;
 bool gt::is_following_closest_player = false;
 bool gt::is_following_punch          = false;
 bool gt::is_auto_ban                 = false;
+bool gt::is_auto_ban_joined          = false;
 bool gt::is_spam_active              = false;
 bool gt::is_auto_message_active      = false;
 bool gt::is_use_tile                 = false;

@@ -11,17 +11,17 @@
 #include "utils.h"
 
 using namespace std;
-std::vector<server::Item> server::inventory;
-std::vector<World::DroppedItemStruct> server::DroppedItem;
-std::vector<string> server::playerName;
-std::mutex server::mtx;
-std::condition_variable server::cv;
-
+vector<PlayerInventory::Item> server::inventory;
+vector<World::DroppedItemStruct> server::DroppedItem;
+vector<string> server::playerName;
+vector<int> server::adminNetID;
+mutex server::mtx;
+condition_variable server::cv;
 
 void server::eventHandle()
 {
     ENetEvent event;
-    while (enet_host_service(m_server_host, &event, 0) > 0)
+    while (enet_host_service(m_server_host, &event, 5) > 0)
     {
         m_server_peer = event.peer;
         switch (event.type)
@@ -37,17 +37,17 @@ void server::eventHandle()
                 switch (packet_type)
                 {
                     case NET_MESSAGE_SERVER_LOGIN_REQUEST:
-                        events::send::onLoginRequest();
+                        events::send::OnLoginRequest();
                         enet_packet_destroy(event.packet);
                         return;
                     case NET_MESSAGE_GENERIC_TEXT:
-                        if (events::send::onGenericText(utils::getText(event.packet)))
+                        if (events::send::OnGenericText(utils::getText(event.packet)))
                         {
                             enet_packet_destroy(event.packet);
                             return;
                         } break;
                     case NET_MESSAGE_GAME_MESSAGE:
-                        if (events::send::onGameMessage(utils::getText(event.packet)))
+                        if (events::send::OnGameMessage(utils::getText(event.packet)))
                         {
                             enet_packet_destroy(event.packet);
                             return;
@@ -60,19 +60,19 @@ void server::eventHandle()
                         switch (packet->m_type)
                         {
                             case PACKET_STATE:
-                                if (events::send::onState(packet))
+                                if (events::send::OnState(packet))
                                 {
                                     enet_packet_destroy(event.packet);
                                     return;
                                 } break;
                             case PACKET_CALL_FUNCTION:
-                                if (events::send::variantList(packet))
+                                if (events::send::VariantList(packet))
                                 {
                                     enet_packet_destroy(event.packet);
                                     return;
                                 } break;
                             case PACKET_PING_REQUEST:
-                                if (events::send::onPingReply(packet))
+                                if (events::send::OnPingReply(packet))
                                 {
                                     enet_packet_destroy(event.packet);
                                     return;
@@ -82,47 +82,34 @@ void server::eventHandle()
                                 server::inventory.clear();
                                 auto extended_ptr = utils::get_extended(packet);
                                 inventory.resize(*reinterpret_cast<short *>(extended_ptr + 9));
-                                memcpy(inventory.data(), extended_ptr + 11, server::inventory.capacity() * sizeof(Item));
-                                for (Item& item : inventory) {
+                                memcpy(inventory.data(), extended_ptr + 11, server::inventory.capacity() * sizeof(PlayerInventory::Item));
+                                for (PlayerInventory::Item& item : inventory) {
                                     if (item.id == gt::block_id) {
-                                        totalBlocksInInventory = item.count;
+                                        this->playerInventory.setTotalInventoryBlock(item.count);
                                     } else if (item.id == (gt::block_id + 1)) {
-                                        droppedItemCounter = item.count;
+                                        this->playerInventory.setTotalDroppedItem(item.count);
                                     }
                                 }
+                                MenuBar::refreshStatusWindow(TYPE_BOTTOM);
                             } break;
                             case PACKET_SEND_MAP_DATA:
-                                if (events::send::onSendMapData(packet, event.packet->dataLength))
+                                if (events::send::OnSendMapData(packet, event.packet->dataLength))
                                 {
                                     enet_packet_destroy(event.packet);
                                     return;
                                 } break;
                             case PACKET_ITEM_CHANGE_OBJECT: {
-                                if (packet->m_player_flags == -1) {
-                                    droppedItemUID++;
-                                    if(gt::is_auto_collect &&
-                                       packet->m_vec_x != 0 &&
-                                       packet->m_vec_y != 0 &&
-                                       packet->m_vec_y <= (m_world.local.lastPos.m_y - 32) &&
-                                       packet->m_vec_y >= (m_world.local.lastPos.m_y + 32) &&
-                                       packet->m_vec_x >= (m_world.local.lastPos.m_x - 80) &&
-                                       packet->m_vec_x <= (m_world.local.lastPos.m_x + 80))
-                                    {
-                                        if (packet->m_int_data == gt::block_id) totalBlocksInInventory += (int)packet->m_struct_flags; // block
-                                        if (packet->m_int_data == gt::block_id + 1) droppedItemCounter += (int)packet->m_struct_flags; // seed
-                                        events::send::onSendCollectDropItem(packet->m_vec_x, packet->m_vec_y);
-                                    }
-                                    if (gt::is_auto_drop && droppedItemCounter >= gt::max_dropped_block) {
-                                        droppedItemCounter = 0;
-                                        send("action|drop\n|itemID|" + to_string(gt::block_id+1));
-                                    }
+                                if (events::send::OnChangeObject(packet)) {
                                     enet_packet_destroy(event.packet);
                                     return;
                                 }
                             } break;
                             case PACKET_TILE_CHANGE_REQUEST: {
                                 if (packet->m_player_flags == m_world.local.netid && packet->m_int_data == gt::block_id) {
-                                    totalBlocksInInventory--;
+                                    this->playerInventory.updateInventoryTotalBlock(-1);
+                                    MenuBar::refreshStatusWindow(TYPE_BOTTOM);
+                                    enet_packet_destroy(event.packet);
+                                    return;
                                 }
                             } break;
                             case PACKET_APP_INTEGRITY_FAIL:
@@ -134,7 +121,26 @@ void server::eventHandle()
                     } break;
                     case NET_MESSAGE_TRACK:
                     {
-                        events::send::onPlayerEnterGame();
+                        rtvar var = rtvar::parse(utils::getText(event.packet));
+                        string eventName = var.find("eventName")->m_value;
+                        
+                        if (eventName == "305_DONATIONBOX") {
+                            int itemID = var.get_int("item");
+                            if (gt::block_id == itemID) {
+                                this->playerInventory.setTotalInventoryBlock(var.get_int("itemamount"));
+                                MenuBar::refreshStatusWindow(TYPE_BOTTOM);
+                            } else {
+                                g_server->send("action|drop\n|itemID|" + to_string(itemID));
+                            }
+                        } else if (eventName == "305_DROP") {
+                            if (var.get_int("Item_id") == gt::block_id + 1) {
+                                this->playerInventory.setTotalDroppedItem(0);
+                                MenuBar::refreshStatusWindow(TYPE_BOTTOM);
+                            }
+                        } else {
+                            // We don't need to handle all tracking packet
+                            events::send::OnPlayerEnterGame();
+                        }
                         enet_packet_destroy(event.packet);
                         return;
                     } break;
@@ -148,10 +154,10 @@ void server::eventHandle()
             } break;
             case ENET_EVENT_TYPE_DISCONNECT:
             {
-                reconnecting(false);
-                server_status = SERVER_DISCONNECT;
+                this->reconnecting(false);
             } break;
             default:
+                enet_packet_destroy(event.packet);
                 break;
         }
     }
@@ -161,13 +167,14 @@ void server::quit()
 {
     gt::in_game = false;
     gt::is_exit = true;
-    std::__fs::filesystem::remove(gt::configuration_file_name);
+    __fs::filesystem::remove(gt::configuration_file_name);
 }
 
 bool server::start_client()
 {
     m_server_host = enet_host_create(0, 1, 2, 0, 0);
     m_server_host->usingNewPacket = true;
+    
     if (!m_server_host)
     {
         server_status = SERVER_FAILED;
@@ -178,7 +185,7 @@ bool server::start_client()
     if (code != 0) {
         server_status = SERVER_FAILED;
     }
-    
+        
     enet_host_flush(m_server_host);
     return true;
 }
@@ -197,16 +204,20 @@ void server::redirect_server(variantlist_t &varlist)
     m_server = str.erase(str.find("|")); //remove | and doorid from end
     
     gt::connecting = true;
-    reconnecting(false);
+    this->reconnecting(false);
 }
 
 void server::reconnecting(bool reset)
 {
+    gt::is_admin_entered = false;
     gt::connecting = false;
-    m_world.connected = false;
-    m_world.local = {};
-    m_world.players.clear();
-    DroppedItem.clear();
+    server_status = SERVER_DISCONNECT;
+    MenuBar::refreshStatusWindow(TYPE_BOTTOM);
+    this->m_world.connected = false;
+    this->m_world.local = {};
+    this->m_world.players.clear();
+    this->DroppedItem.clear();
+    this->adminNetID.clear();
     if (m_server_peer)
     {
         enet_peer_disconnect(m_server_peer, 0);
@@ -222,8 +233,8 @@ void server::reconnecting(bool reset)
         m_port = 17198;
     }
     
-    if (!connect()) {
-        reconnecting(false);
+    if (!this->connect()) {
+        this->reconnecting(false);
     }
 }
 
@@ -231,6 +242,7 @@ bool server::connect()
 {
     ENetAddress address;
     enet_address_set_host(&address, m_server.c_str());
+    server_status = -1;
     address.port = m_port;
     if (!start_client())
     {
@@ -243,6 +255,7 @@ bool server::connect()
         server_status = SERVER_FAILED;
         return false;
     }
+    MenuBar::refreshStatusWindow(TYPE_BOTTOM);
     return true;
 }
 
@@ -251,17 +264,17 @@ string server::getServerStatus()
     switch (server_status)
     {
         case SERVER_CONNECTED:
-            return "OK!";
+            return "ONLINE";
         case SERVER_DISCONNECT:
-            return "DC!";
+            return "RECON";
         case SERVER_FAILED:
-            return "FAILED!";
+            return "NO INTERNET";
     }
-    return "...";
+    return "OFFLINE";
 }
 
 void server::send(int32_t type, uint8_t* data, int32_t len) {
-    std::lock_guard<std::mutex> lock(mtx);
+    lock_guard<mutex> lock(this->mtx);
 
     auto peer = m_server_peer;
     auto host = m_server_host;
@@ -279,7 +292,7 @@ void server::send(int32_t type, uint8_t* data, int32_t len) {
 }
 
 void server::send(variantlist_t& list, int32_t netid, int32_t delay) {
-    std::lock_guard<std::mutex> lock(mtx);
+    lock_guard<mutex> lock(this->mtx);
     
     auto peer = m_server_peer;
     auto host = m_server_host;
@@ -315,8 +328,8 @@ void server::send(variantlist_t& list, int32_t netid, int32_t delay) {
     free(game_packet);
 }
 
-void server::send(std::string text, int32_t type) {
-    std::lock_guard<std::mutex> lock(mtx);
+void server::send(string text, int32_t type) {
+    lock_guard<mutex> lock(this->mtx);
 
     auto peer = m_server_peer;
     auto host = m_server_host;
@@ -334,13 +347,13 @@ void server::send(std::string text, int32_t type) {
 
 void server::setTargetWorld(string worldName)
 {
-    g_server->send("action|join_request\nname|" + worldName, 3);
+    this->send("action|join_request\nname|" + worldName, 3);
 }
 
 bool server::inRange(float x, float y, int distanceX, int distanceY) {
-    float minX = m_world.local.pos.m_x - distanceX;
-    float maxX = m_world.local.pos.m_x + distanceX;
-    float minY = m_world.local.pos.m_y - distanceY;
-    float maxY = m_world.local.pos.m_y + distanceY;
+    float minX = this->m_world.local.pos.m_x - distanceX;
+    float maxX = this->m_world.local.pos.m_x + distanceX;
+    float minY = this->m_world.local.pos.m_y - distanceY;
+    float maxY = this->m_world.local.pos.m_y + distanceY;
     return x >= minX && x <= maxX && y >= minY && y <= maxY;
 }
