@@ -14,6 +14,7 @@ using namespace std;
 using json = nlohmann::json;
 
 const char hexmap_s[17] = "0123456789abcdef";
+int colorIndex = 0;
 mt19937 rng;
 
 gameupdatepacket_t *utils::getStruct(ENetPacket *packet)
@@ -140,13 +141,16 @@ string utils::generateQuotes(string text)
 
 string utils::colorStr(string str)
 {
-    string chrs = "0123456789bwpo^$#@!qertas";
+    // Color list: 0123456789bwpo^$#@!qertas
+    string chrs = "02468";
     char* x;
     x = (char*)malloc(2);
-    x[0] = chrs[rand() % chrs.length()];
+    x[0] = chrs[colorIndex];
     x[1] = 0;
     string y = x;
     free(x);
+    colorIndex++;
+    if (colorIndex == chrs.length()) colorIndex = 0;
     return "`" + y + str;
 }
 

@@ -16,7 +16,7 @@
 
 using namespace std;
 
-bool events::send::variantList(gameupdatepacket_t *packet)
+bool events::send::VariantList(gameupdatepacket_t *packet)
 {
     variantlist_t varlist{};
     auto extended = utils::get_extended(packet);
@@ -43,6 +43,7 @@ bool events::send::variantList(gameupdatepacket_t *packet)
             world.connected = false;
             world.name = "EXIT";
             gt::is_admin_entered = false;
+            MenuBar::refreshStatusWindow(TYPE_WORLD);
             g_server->DroppedItem.clear();
             g_server->adminNetID.clear();
             g_server->setTargetWorld(gt::target_world_name);
@@ -99,6 +100,7 @@ bool events::send::variantList(gameupdatepacket_t *packet)
                     } else {
                         g_server->playerInventory.updateInventoryTotalBlock(totalCollectedItem);
                     }
+                    MenuBar::refreshStatusWindow(TYPE_BOTTOM);
                 }
             }
             
@@ -108,7 +110,10 @@ bool events::send::variantList(gameupdatepacket_t *packet)
                 if (stripText.find("!follow") != -1) {
                     gt::is_following_owner = !gt::is_following_owner;
                 } else if (stripText.find("!warp") != -1) {
-                    g_server->setTargetWorld(utils::split(text, "!warp", 1));
+                    string worldName = utils::stripMessage(utils::split(text, "!warp", 1));
+                    vector<string> targetWorld = utils::split(worldName, " ");
+                    gt::target_world_name = targetWorld.size() <= 1 ? targetWorld[0] : targetWorld[0] + "|" + targetWorld[1];
+                    g_server->setTargetWorld(gt::target_world_name);
                 } else if (stripText.find("!setMsg") != -1) {
                     gt::spam_text = utils::split(text, "!setMsg", 1);
                 }
@@ -268,7 +273,7 @@ bool events::send::variantList(gameupdatepacket_t *packet)
     return false;
 }
 
-bool events::send::onPingReply(gameupdatepacket_t *packet)
+bool events::send::OnPingReply(gameupdatepacket_t *packet)
 {
     //since this is a pointer we do not need to copy memory manually again
     packet->m_type = 21;        // ping packet
@@ -281,7 +286,7 @@ bool events::send::onPingReply(gameupdatepacket_t *packet)
     return false;
 }
 
-void events::send::onLoginRequest()
+void events::send::OnLoginRequest()
 {
     rtvar var = rtvar::parse("");
     auto mac = utils::generateMac();
@@ -325,7 +330,7 @@ void events::send::onLoginRequest()
     g_server->send(packet);
 }
 
-void events::send::onPlayerEnterGame()
+void events::send::OnPlayerEnterGame()
 {
     rtvar var = rtvar::parse("");
     var.append("action|enter_game");
@@ -333,7 +338,7 @@ void events::send::onPlayerEnterGame()
     g_server->send(packet);
 }
 
-bool events::send::onGenericText(string packet)
+bool events::send::OnGenericText(string packet)
 {
     //        PRINTS("Generic text: %s\n", packet.c_str());
     //        auto &world = g_server->m_world;
@@ -342,7 +347,7 @@ bool events::send::onGenericText(string packet)
     return false;
 }
 
-bool events::send::onGameMessage(string packet)
+bool events::send::OnGameMessage(string packet)
 {
     //     PRINTD("Game message: %s\n", packet.c_str());
     rtvar var = rtvar::parse(packet);
@@ -359,7 +364,7 @@ bool events::send::onGameMessage(string packet)
     return false;
 }
 
-bool events::send::onState(gameupdatepacket_t *packet)
+bool events::send::OnState(gameupdatepacket_t *packet)
 {
     if (!g_server->m_world.connected)
         return false;
@@ -389,7 +394,7 @@ bool events::send::onState(gameupdatepacket_t *packet)
     return true;
 }
 
-void events::send::onSendTileActiveRequest(int posX, int posY) {
+void events::send::OnSendTileActiveRequest(int posX, int posY) {
     gameupdatepacket_t packet{};
     packet.m_type = PACKET_TILE_ACTIVATE_REQUEST;
     packet.m_player_flags = g_server->m_world.local.netid;
@@ -398,18 +403,18 @@ void events::send::onSendTileActiveRequest(int posX, int posY) {
     g_server->send(NET_MESSAGE_GAME_PACKET, (uint8_t*)&packet, sizeof(packet));
 }
 
-bool events::send::onChangeObject(gameupdatepacket_t *packet) {
+bool events::send::OnChangeObject(gameupdatepacket_t *packet) {
     if (packet->m_player_flags == -1) {
         g_server->playerInventory.increaseDroppedItemUID();
         if(gt::is_auto_collect &&
            packet->m_vec_x != 0 &&
            packet->m_vec_y != 0 &&
            packet->m_vec_y <= (g_server->lastPos.m_y - 30) &&
-           packet->m_vec_y >= (g_server->lastPos.m_y - 70) &&
-           packet->m_vec_x >= (g_server->lastPos.m_x - 82) &&
-           packet->m_vec_x <= (g_server->lastPos.m_x + 82))
+           packet->m_vec_y >= (g_server->lastPos.m_y - 75) &&
+           packet->m_vec_x >= (g_server->lastPos.m_x - 80) &&
+           packet->m_vec_x <= (g_server->lastPos.m_x + 80))
         {
-            events::send::onSendCollectDropItem(packet->m_vec_x, packet->m_vec_y);
+            events::send::OnSendCollectDropItem(packet->m_vec_x, packet->m_vec_y);
             if (packet->m_int_data != gt::block_id && packet->m_int_data != gt::block_id+1 && packet->m_int_data != 112) {
                 g_server->send("action|trash\n|itemID|" + to_string(packet->m_int_data));
             }
@@ -421,7 +426,7 @@ bool events::send::onChangeObject(gameupdatepacket_t *packet) {
     return true;
 }
 
-bool events::send::onSendMapData(gameupdatepacket_t *packet, long packetLength)
+bool events::send::OnSendMapData(gameupdatepacket_t *packet, long packetLength)
 {
     g_server->m_world = {};
     auto extended = utils::get_extended(packet);
@@ -453,6 +458,7 @@ bool events::send::onSendMapData(gameupdatepacket_t *packet, long packetLength)
     /* *********************************************** */
     
     g_server->m_world.name = string(name);
+    MenuBar::refreshStatusWindow(TYPE_WORLD);
     g_server->m_world.connected = true;
     if (string(name) != gt::target_world_name)
     {
@@ -466,7 +472,7 @@ bool events::send::onSendMapData(gameupdatepacket_t *packet, long packetLength)
     return false;
 }
 
-void events::send::onSendPacketMove(float posX, float posY, int characterState)
+void events::send::OnSendPacketMove(float posX, float posY, int characterState)
 {
     gameupdatepacket_t packet{};
     packet.m_type = PACKET_STATE;
@@ -477,7 +483,7 @@ void events::send::onSendPacketMove(float posX, float posY, int characterState)
     g_server->send(NET_MESSAGE_GAME_PACKET, (uint8_t*)&packet, sizeof(packet));
 }
 
-bool events::send::onSendCollectDropItem(float posX, float posY)
+bool events::send::OnSendCollectDropItem(float posX, float posY)
 {
     gameupdatepacket_t packet{};
     packet.m_type = PACKET_ITEM_ACTIVATE_OBJECT_REQUEST;
@@ -490,7 +496,7 @@ bool events::send::onSendCollectDropItem(float posX, float posY)
     return true;
 }
 
-void events::send::onSendChatPacket()
+void events::send::OnSendChatPacket()
 {
     
     /*
@@ -515,14 +521,14 @@ void events::send::onSendChatPacket()
         }
         if (gt::is_spam_active && g_server->m_world.connected && gt::safety_spam == 0 && !gt::is_admin_entered)
         {
-            g_server->send("action|input\n|text|" + gt::spam_text);
+            g_server->send("action|input\n|text|" + utils::colorStr(gt::spam_text));
         }
         if(gt::safety_spam != 0) gt::safety_spam--;
         this_thread::sleep_for(chrono::milliseconds(gt::spam_delay));
     }
 }
 
-void events::send::onSendMessagePacket()
+void events::send::OnSendMessagePacket()
 {
     /*
      * we need to order the player name from vector
@@ -551,7 +557,7 @@ void events::send::onSendMessagePacket()
     }
 }
 
-void events::send::onSendTileChangeRequestPacket()
+void events::send::OnSendTileChangeRequestPacket()
 {
     float *x       = &g_server->lastPos.m_x;
     float *y       = &g_server->lastPos.m_y;
@@ -585,18 +591,21 @@ void events::send::onSendTileChangeRequestPacket()
             for (int i = 1; i <= 5; i++)
             {
                 packet.m_state1++;
-                for(int counterHit = 1; counterHit <= (isBreak ? gt::hit_per_block : 3); counterHit++) {
+                for(int counterHit = 1; counterHit <= (isBreak ? gt::hit_per_block : 2); counterHit++) {
                     g_server->send(NET_MESSAGE_GAME_PACKET, (uint8_t*)&packet, sizeof(packet));
                     this_thread::sleep_for(chrono::milliseconds(isBreak ? 180 : 110));
                 }
             }
             
-            if (g_server->playerInventory.getTotalCurrentBlock() <= 0) {
+            if (gt::is_auto_place_active && g_server->playerInventory.getTotalCurrentBlock() <= 0) {
+                this_thread::sleep_for(chrono::milliseconds(300)); // We need to put delay here to make sure all block has placed!
                 packet.m_state1 = ((int)(*x / 32) - 1) + g_server->donationBoxPosition;
                 packet.m_state2 = (int)ceil(*y / 32) - 2;
                 packet.m_int_data = 32;
                 g_server->send(NET_MESSAGE_GAME_PACKET, (uint8_t*)&packet, sizeof(packet));
             }
+        } else {
+            this_thread::sleep_for(chrono::seconds(3));
         }
     }
 }

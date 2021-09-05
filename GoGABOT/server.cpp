@@ -21,7 +21,7 @@ condition_variable server::cv;
 void server::eventHandle()
 {
     ENetEvent event;
-    while (enet_host_service(m_server_host, &event, 10) > 0)
+    while (enet_host_service(m_server_host, &event, 5) > 0)
     {
         m_server_peer = event.peer;
         switch (event.type)
@@ -37,17 +37,17 @@ void server::eventHandle()
                 switch (packet_type)
                 {
                     case NET_MESSAGE_SERVER_LOGIN_REQUEST:
-                        events::send::onLoginRequest();
+                        events::send::OnLoginRequest();
                         enet_packet_destroy(event.packet);
                         return;
                     case NET_MESSAGE_GENERIC_TEXT:
-                        if (events::send::onGenericText(utils::getText(event.packet)))
+                        if (events::send::OnGenericText(utils::getText(event.packet)))
                         {
                             enet_packet_destroy(event.packet);
                             return;
                         } break;
                     case NET_MESSAGE_GAME_MESSAGE:
-                        if (events::send::onGameMessage(utils::getText(event.packet)))
+                        if (events::send::OnGameMessage(utils::getText(event.packet)))
                         {
                             enet_packet_destroy(event.packet);
                             return;
@@ -60,19 +60,19 @@ void server::eventHandle()
                         switch (packet->m_type)
                         {
                             case PACKET_STATE:
-                                if (events::send::onState(packet))
+                                if (events::send::OnState(packet))
                                 {
                                     enet_packet_destroy(event.packet);
                                     return;
                                 } break;
                             case PACKET_CALL_FUNCTION:
-                                if (events::send::variantList(packet))
+                                if (events::send::VariantList(packet))
                                 {
                                     enet_packet_destroy(event.packet);
                                     return;
                                 } break;
                             case PACKET_PING_REQUEST:
-                                if (events::send::onPingReply(packet))
+                                if (events::send::OnPingReply(packet))
                                 {
                                     enet_packet_destroy(event.packet);
                                     return;
@@ -90,15 +90,16 @@ void server::eventHandle()
                                         this->playerInventory.setTotalDroppedItem(item.count);
                                     }
                                 }
+                                MenuBar::refreshStatusWindow(TYPE_BOTTOM);
                             } break;
                             case PACKET_SEND_MAP_DATA:
-                                if (events::send::onSendMapData(packet, event.packet->dataLength))
+                                if (events::send::OnSendMapData(packet, event.packet->dataLength))
                                 {
                                     enet_packet_destroy(event.packet);
                                     return;
                                 } break;
                             case PACKET_ITEM_CHANGE_OBJECT: {
-                                if (events::send::onChangeObject(packet)) {
+                                if (events::send::OnChangeObject(packet)) {
                                     enet_packet_destroy(event.packet);
                                     return;
                                 }
@@ -106,6 +107,7 @@ void server::eventHandle()
                             case PACKET_TILE_CHANGE_REQUEST: {
                                 if (packet->m_player_flags == m_world.local.netid && packet->m_int_data == gt::block_id) {
                                     this->playerInventory.updateInventoryTotalBlock(-1);
+                                    MenuBar::refreshStatusWindow(TYPE_BOTTOM);
                                     enet_packet_destroy(event.packet);
                                     return;
                                 }
@@ -126,14 +128,18 @@ void server::eventHandle()
                             int itemID = var.get_int("item");
                             if (gt::block_id == itemID) {
                                 this->playerInventory.setTotalInventoryBlock(var.get_int("itemamount"));
+                                MenuBar::refreshStatusWindow(TYPE_BOTTOM);
                             } else {
                                 g_server->send("action|drop\n|itemID|" + to_string(itemID));
                             }
                         } else if (eventName == "305_DROP") {
-                            this->playerInventory.setTotalDroppedItem(0);
+                            if (var.get_int("Item_id") == gt::block_id + 1) {
+                                this->playerInventory.setTotalDroppedItem(0);
+                                MenuBar::refreshStatusWindow(TYPE_BOTTOM);
+                            }
                         } else {
                             // We don't need to handle all tracking packet
-                            events::send::onPlayerEnterGame();
+                            events::send::OnPlayerEnterGame();
                         }
                         enet_packet_destroy(event.packet);
                         return;
@@ -149,7 +155,6 @@ void server::eventHandle()
             case ENET_EVENT_TYPE_DISCONNECT:
             {
                 this->reconnecting(false);
-                server_status = SERVER_DISCONNECT;
             } break;
             default:
                 enet_packet_destroy(event.packet);
@@ -206,6 +211,8 @@ void server::reconnecting(bool reset)
 {
     gt::is_admin_entered = false;
     gt::connecting = false;
+    server_status = SERVER_DISCONNECT;
+    MenuBar::refreshStatusWindow(TYPE_BOTTOM);
     this->m_world.connected = false;
     this->m_world.local = {};
     this->m_world.players.clear();
@@ -235,6 +242,7 @@ bool server::connect()
 {
     ENetAddress address;
     enet_address_set_host(&address, m_server.c_str());
+    server_status = -1;
     address.port = m_port;
     if (!start_client())
     {
@@ -247,6 +255,7 @@ bool server::connect()
         server_status = SERVER_FAILED;
         return false;
     }
+    MenuBar::refreshStatusWindow(TYPE_BOTTOM);
     return true;
 }
 
@@ -255,13 +264,13 @@ string server::getServerStatus()
     switch (server_status)
     {
         case SERVER_CONNECTED:
-            return "OK!";
+            return "ONLINE";
         case SERVER_DISCONNECT:
-            return "DC!";
+            return "RECON";
         case SERVER_FAILED:
-            return "FAILED!";
+            return "NO INTERNET";
     }
-    return "...";
+    return "OFFLINE";
 }
 
 void server::send(int32_t type, uint8_t* data, int32_t len) {

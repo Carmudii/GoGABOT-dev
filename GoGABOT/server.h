@@ -8,6 +8,7 @@
 #include "enet/include/enet.h"
 #include "world.h"
 #include "packet.h"
+#include "Ui/menu.h"
 #include "playerInventory.h"
 
 using namespace std;
