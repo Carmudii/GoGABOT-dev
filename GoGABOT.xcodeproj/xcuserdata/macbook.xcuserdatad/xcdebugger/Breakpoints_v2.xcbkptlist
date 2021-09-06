@@ -320,7 +320,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "160"
             endingLineNumber = "160"
-            landmarkName = "server::eventHandle()"
+            landmarkName = "server::start_client()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -336,7 +336,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "571"
             endingLineNumber = "571"
-            landmarkName = "events::send::OnSendTileChangeRequestPacket()"
+            landmarkName = "events::send::OnSendMessagePacket()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

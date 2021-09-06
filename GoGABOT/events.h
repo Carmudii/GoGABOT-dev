@@ -25,5 +25,6 @@ namespace events
         void OnSendTileActiveRequest(int posX, int posY);
         bool OnSendCollectDropItem(float posX, float posY);
         bool OnChangeObject(gameupdatepacket_t *packet);
+        bool OnSetTrackingPacket(string packet);
         }; // namespace send
     }; // namespace events

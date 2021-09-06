@@ -143,10 +143,10 @@ bool events::send::VariantList(gameupdatepacket_t *packet)
                             g_server->send("action|drop\n|itemID|" + to_string(gt::block_id+1));
                         }
                         g_server->donationBoxPosition++;
-                        if (g_server->donationBoxPosition == 3) g_server->donationBoxPosition = 0;
+                        if (g_server->donationBoxPosition == 5) g_server->donationBoxPosition = 0;
                         return true;
                     }
-                    int tilePosX = ((int)(g_server->lastPos.m_x / 32) - 1) + g_server->donationBoxPosition;
+                    int tilePosX = ((int)(g_server->lastPos.m_x / 32) - 2) + g_server->donationBoxPosition;
                     int tilePosY = (int)ceil(g_server->lastPos.m_y / 32) - 2;
                     g_server->send("action|dialog_return\ndialog_name|donation_box_edit\ntilex|"+to_string(tilePosX)+"|\ntiley|"+to_string(tilePosY)+
                                    "|\nbuttonClicked|clear\n\ncheckbox|0");
@@ -185,7 +185,10 @@ bool events::send::VariantList(gameupdatepacket_t *packet)
                     auto &player = players[i];
                     if (player.netid == netid)
                     {
-                        if (gt::public_net_id == netid) gt::public_net_id = 0;
+                        if (gt::public_net_id == netid) {
+                            gt::public_net_id = 0;
+                            g_server->setTargetWorld(gt::target_world_name);
+                        }
                         bool hasAdmin = find(g_server->adminNetID.begin(), g_server->adminNetID.end(), netid) != g_server->adminNetID.end();
                         if (hasAdmin && gt::is_spam_active) {
                             g_server->adminNetID.erase(remove(g_server->adminNetID.begin(),
@@ -213,12 +216,9 @@ bool events::send::VariantList(gameupdatepacket_t *packet)
                 Player ply{};
                 bool isOwner = utils::toUpper(gt::owner_name) == utils::toUpper(utils::stripMessage(name->m_value));
 
-                if (isOwner)
-                {
-                    gt::owner_net_id = var.get_int("netID");
-                } else if (!gt::public_net_id) {
-                    gt::public_net_id = var.get_int("netID");
-                }
+                if (isOwner) gt::owner_net_id = var.get_int("netID");
+                if (!gt::is_following_closest_player) g_server->setTargetWorld(gt::target_world_name);
+                gt::public_net_id = var.get_int("netID");
                 
                 if (!isOwner && (name->m_value.find("`2") != -1 || name->m_value.find("`^") != -1)) {
                     g_server->adminNetID.push_back(var.get_int("netID"));
@@ -386,7 +386,8 @@ bool events::send::OnState(gameupdatepacket_t *packet)
         }
         return false;
     }
-    else if (gt::is_following_public && packet->m_state1 == -1 && packet->m_state2 == -1 && packet->m_player_flags == gt::public_net_id)
+    else if (gt::is_following_public && packet->m_state1 == -1 && packet->m_state2 == -1 && (packet->m_player_flags == gt::public_net_id ||
+                                                                                             gt::is_following_closest_player))
     {
         return gt::is_following_closest_player ? !g_server->inRange(packet->m_vec_x, packet->m_vec_y, 80, 80) : false;
     }
@@ -496,6 +497,33 @@ bool events::send::OnSendCollectDropItem(float posX, float posY)
     return true;
 }
 
+bool events::send::OnSetTrackingPacket(string packet) {
+    rtvar var = rtvar::parse(packet);
+    string eventName = var.find("eventName")->m_value;
+    
+    if (eventName == "305_DONATIONBOX") {
+        int itemID = var.get_int("item");
+        if (gt::block_id == itemID) {
+            g_server->playerInventory.setTotalInventoryBlock(var.get_int("itemamount"));
+            MenuBar::refreshStatusWindow(TYPE_BOTTOM);
+        } else {
+            g_server->send("action|drop\n|itemID|" + to_string(itemID));
+        }
+    } else if (eventName == "305_DROP") {
+        if (var.get_int("Item_id") == gt::block_id + 1) {
+            g_server->playerInventory.setTotalDroppedItem(0);
+            MenuBar::refreshStatusWindow(TYPE_BOTTOM);
+        }
+    } else /* if (eventName == "100_MOBILE.START") {
+        int gems = var.get_int("Gems_balance");
+        int level = var.get_int("Level");
+    } else */ {
+        // We don't need to handle all tracking packet
+        events::send::OnPlayerEnterGame();
+    }
+    return true;
+}
+
 void events::send::OnSendChatPacket()
 {
     
@@ -599,7 +627,7 @@ void events::send::OnSendTileChangeRequestPacket()
             
             if (gt::is_auto_place_active && g_server->playerInventory.getTotalCurrentBlock() <= 0) {
                 this_thread::sleep_for(chrono::milliseconds(300)); // We need to put delay here to make sure all block has placed!
-                packet.m_state1 = ((int)(*x / 32) - 1) + g_server->donationBoxPosition;
+                packet.m_state1 = ((int)(*x / 32) - 2) + g_server->donationBoxPosition;
                 packet.m_state2 = (int)ceil(*y / 32) - 2;
                 packet.m_int_data = 32;
                 g_server->send(NET_MESSAGE_GAME_PACKET, (uint8_t*)&packet, sizeof(packet));
