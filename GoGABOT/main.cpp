@@ -122,7 +122,7 @@ badInput:
         mvwprintw(creditWindow, 2, 4, "BOT made bY 9GATE-Comunity");
         mvwprintw(creditWindow, 3, 9, "GoGABOT (c) 2021");
         wrefresh(creditWindow);
-        WINDOW *win = newwin(21, 36, 7, 4);
+        WINDOW *win = newwin(22, 36, 7, 4);
         box(win, 0, 0);
         keypad(win, TRUE);
         

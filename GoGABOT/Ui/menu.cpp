@@ -127,17 +127,19 @@ void MenuBar::refreshStatusWindow(WindowRefreshType type)
     
     switch (type) {
         case TYPE_WORLD:
-            mvwprintw(win, 18, 1, whiteSpace.c_str());
-            mvwprintw(win, 18, 1, "[=] WORLD    : %s", g_server->m_world.name.c_str());
+            mvwprintw(win, 19, 1, whiteSpace.c_str());
+            mvwprintw(win, 19, 1, "[=] WORLD NAME : %s", g_server->m_world.name.c_str());
             break;
         case TYPE_NAME:
             mvwprintw(win, 17, 1, whiteSpace.c_str());
-            mvwprintw(win, 17, 1, "[=] BOT NAME : %s", utils::toUpper(gt::bot_name).c_str());
+            mvwprintw(win, 17, 1, "[=] BLOCK NAME : %s", g_server->m_world.GetItemDef(gt::block_id).itemName.c_str());
+            mvwprintw(win, 18, 1, whiteSpace.c_str());
+            mvwprintw(win, 18, 1, "[=] BOT   NAME : %s", utils::toUpper(gt::bot_name).c_str());
             break;
         case TYPE_BOTTOM:
             wattron(win, A_REVERSE);
-            mvwprintw(win, 19, 1, whiteSpace.c_str());
-            mvwprintw(win, 19, 1, "[%s], [BLOCK] %d, [SEED] %d",
+            mvwprintw(win, 20, 1, whiteSpace.c_str());
+            mvwprintw(win, 20, 1, "[%s], [BLOCK] %d, [SEED] %d",
                       g_server->getServerStatus().c_str(),
                       g_server->playerInventory.getTotalCurrentBlock(),
                       g_server->playerInventory.getTotalDroppedItem());
@@ -199,7 +201,7 @@ void MenuBar::bindingKey()
                 break;
             case 11:
                 gt::is_auto_drop = valueOfActiveMenu > 0;
-                gt::max_dropped_block = valueOfActiveMenu - 1;
+                gt::max_dropped_block = valueOfActiveMenu;
                 break;
             case 12:
                 gt::is_auto_break_active = isActiveMenu;

@@ -288,7 +288,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "241"
             endingLineNumber = "241"
-            landmarkName = "server::connect()"
+            landmarkName = "server::reconnecting(reset)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -304,7 +304,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "210"
             endingLineNumber = "210"
-            landmarkName = "server::reconnecting(reset)"
+            landmarkName = "server::redirect_server(varlist)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -336,7 +336,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "571"
             endingLineNumber = "571"
-            landmarkName = "events::send::OnSendTileChangeRequestPacket()"
+            landmarkName = "events::send::OnSendMessagePacket()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

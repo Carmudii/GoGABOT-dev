@@ -121,28 +121,10 @@ void server::eventHandle()
                     } break;
                     case NET_MESSAGE_TRACK:
                     {
-                        rtvar var = rtvar::parse(utils::getText(event.packet));
-                        string eventName = var.find("eventName")->m_value;
-                        
-                        if (eventName == "305_DONATIONBOX") {
-                            int itemID = var.get_int("item");
-                            if (gt::block_id == itemID) {
-                                this->playerInventory.setTotalInventoryBlock(var.get_int("itemamount"));
-                                MenuBar::refreshStatusWindow(TYPE_BOTTOM);
-                            } else {
-                                g_server->send("action|drop\n|itemID|" + to_string(itemID));
-                            }
-                        } else if (eventName == "305_DROP") {
-                            if (var.get_int("Item_id") == gt::block_id + 1) {
-                                this->playerInventory.setTotalDroppedItem(0);
-                                MenuBar::refreshStatusWindow(TYPE_BOTTOM);
-                            }
-                        } else {
-                            // We don't need to handle all tracking packet
-                            events::send::OnPlayerEnterGame();
+                        if (events::send::OnSetTrackingPacket(utils::getText(event.packet))) {
+                            enet_packet_destroy(event.packet);
+                            return;
                         }
-                        enet_packet_destroy(event.packet);
-                        return;
                     } break;
                     default:
                         break;
@@ -167,7 +149,7 @@ void server::quit()
 {
     gt::in_game = false;
     gt::is_exit = true;
-    __fs::filesystem::remove(gt::configuration_file_name);
+//    __fs::filesystem::remove(gt::configuration_file_name);
 }
 
 bool server::start_client()
@@ -209,9 +191,9 @@ void server::redirect_server(variantlist_t &varlist)
 
 void server::reconnecting(bool reset)
 {
-    gt::is_admin_entered = false;
-    gt::connecting = false;
-    server_status = SERVER_DISCONNECT;
+    gt::is_admin_entered    = false;
+    gt::connecting          = false;
+    server_status           = SERVER_DISCONNECT;
     MenuBar::refreshStatusWindow(TYPE_BOTTOM);
     this->m_world.connected = false;
     this->m_world.local = {};
@@ -242,7 +224,6 @@ bool server::connect()
 {
     ENetAddress address;
     enet_address_set_host(&address, m_server.c_str());
-    server_status = -1;
     address.port = m_port;
     if (!start_client())
     {
@@ -255,7 +236,7 @@ bool server::connect()
         server_status = SERVER_FAILED;
         return false;
     }
-    MenuBar::refreshStatusWindow(TYPE_BOTTOM);
+    
     return true;
 }
 
