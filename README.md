@@ -4,11 +4,19 @@ The advantage of GoGABOT is that it does not require additional applications. it
 even though it only requires a terminal, GoGABOT is also equipped with a UI, making it easier for you to make settings on the bot.
 
 # system requirements:
-- ubuntu ? 2.04
+- ubuntu > 2.04
 - android phone > 5.0
 
 # Features:
 ---------------------------------------------------------------
+- SPAM
+- Auto Message
+- Following Owner
+- Following Public
+- Following Closest
+- Following Punch
+- Auto Ban Seller
+- Auto Ban Joiner
 - Auto Break
 - Auto Place
 - Auto Drop
@@ -23,6 +31,6 @@ even though it only requires a terminal, GoGABOT is also equipped with a UI, mak
 ---------------------------------------------------------------
 # About
 
-This was made by @Carmudii, but this source by @aman6nen
-thank to for the idea @playingoDEERUX
+This project was made by @Carmudii, but this source by @aman6nen
+Special thanks to @playingoDEERUX
 
