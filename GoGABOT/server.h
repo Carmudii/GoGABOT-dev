@@ -10,6 +10,7 @@
 #include "packet.h"
 #include "Ui/menu.h"
 #include "playerInventory.h"
+#include "curl/http_client.hpp"
 
 using namespace std;
 
@@ -29,6 +30,7 @@ private:
 
     int server_status;
     bool start_client();
+    HttpClient *httpClient = new HttpClient();
 
 public:
     static vector<World::DroppedItemStruct> DroppedItem;
@@ -38,11 +40,13 @@ public:
     static mutex mtx;
     static condition_variable cv;
     
+    string m_server = "";
+    int m_port = 0;
+    
     int m_user = 0;
     int m_token = 0;
-    int m_port = 17198;
     bool inRange(float x, float y, int distanceX = 100, int distanceY = 100);
-    bool connect();
+    bool connect(bool restartConnection = false);
     void quit();
     void redirect_server(variantlist_t &varlist);
     void send(int32_t type, uint8_t* data, int32_t len);
@@ -53,7 +57,6 @@ public:
     void reconnecting(bool reset);
         
     string m_doorID = "";
-    string m_server = "213.179.209.168";
     string getServerStatus();
     World m_world;
     PlayerInventory playerInventory;
