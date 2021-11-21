@@ -26,7 +26,6 @@ int main()
     bool isConfigurationFileExists = utils::ifExists(gt::configuration_file_name);
 retype:
     
-    system("clear");
     cout << R"(
 _________       ________________ ________ _______ ________
  __  ____/______ __  ____/___    |___  __ )__  __ \___  __/
@@ -103,14 +102,13 @@ badInput:
         utils::saveUserInfo(gt::bot_name, gt::bot_password, gt::owner_name, gt::block_id);
     }
     
-    system("clear");
     initscr();
     noecho();
     curs_set(0);
     enet_initialize();
     
     g_server->m_world.setupItemDefs();
-    if (g_server->connect())
+    if (g_server->connect(true))
     {
         int screenMaxY, screenMaxX;
         getmaxyx(stdscr, screenMaxY, screenMaxX);
@@ -174,6 +172,7 @@ badInput:
         }
     } else {
         cout << "Error when trying start client." << endl;
+        return 0;
     }
     
     endwin();

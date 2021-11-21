@@ -185,8 +185,8 @@ bool events::send::VariantList(gameupdatepacket_t *packet)
                     auto &player = players[i];
                     if (player.netid == netid)
                     {
-                        if (gt::public_net_id == netid) {
-                            gt::public_net_id = 0;
+                        if (gt::public_net_id == netid && gt::is_following_public) {
+                            gt::public_net_id = -1;
                             g_server->setTargetWorld(gt::target_world_name);
                         }
                         bool hasAdmin = find(g_server->adminNetID.begin(), g_server->adminNetID.end(), netid) != g_server->adminNetID.end();
@@ -217,7 +217,7 @@ bool events::send::VariantList(gameupdatepacket_t *packet)
                 bool isOwner = utils::toUpper(gt::owner_name) == utils::toUpper(utils::stripMessage(name->m_value));
 
                 if (isOwner) gt::owner_net_id = var.get_int("netID");
-                if (!gt::is_following_closest_player) g_server->setTargetWorld(gt::target_world_name);
+                if (!gt::is_following_closest_player && gt::is_following_public) g_server->setTargetWorld(gt::target_world_name);
                 gt::public_net_id = var.get_int("netID");
                 
                 if (!isOwner && (name->m_value.find("`2") != -1 || name->m_value.find("`^") != -1)) {
@@ -273,16 +273,16 @@ bool events::send::VariantList(gameupdatepacket_t *packet)
     return false;
 }
 
-bool events::send::OnPingReply(gameupdatepacket_t *packet)
+bool events::send::OnSendPing(gameupdatepacket_t *packet)
 {
     //since this is a pointer we do not need to copy memory manually again
     packet->m_type = 21;        // ping packet
-    packet->m_vec2_x = 1000.f;  //gravity
-    packet->m_vec2_y = 250.f;   //move speed
-    packet->m_vec_x = 64.f;     //punch range
-    packet->m_vec_y = 64.f;     //build range
-    packet->m_jump_amount = 0;  //for example unlim jumps set it to high which causes ban
-    packet->m_player_flags = 0; //effect flags. good to have as 0 if using mod noclip, or etc.
+    packet->m_vec2_x = 1000.f;  // gravity
+    packet->m_vec2_y = 250.f;   // move speed
+    packet->m_vec_x = 64.f;     // punch range
+    packet->m_vec_y = 64.f;     // build range
+    packet->m_jump_amount = 0;  // for example unlim jumps set it to high which causes ban
+    packet->m_player_flags = 0; // effect flags. good to have as 0 if using mod noclip, or etc.
     return false;
 }
 
@@ -332,10 +332,7 @@ void events::send::OnLoginRequest()
 
 void events::send::OnPlayerEnterGame()
 {
-    rtvar var = rtvar::parse("");
-    var.append("action|enter_game");
-    string packet = var.serialize();
-    g_server->send(packet);
+    g_server->send("action|enter_game");
 }
 
 bool events::send::OnGenericText(string packet)
@@ -526,26 +523,11 @@ bool events::send::OnSetTrackingPacket(string packet) {
 
 void events::send::OnSendChatPacket()
 {
-    
-    /*
-     * This is a thread don't put anything code
-     * under this function if you don't understand about a thread!!
-     * because can make a thread race!!
-     * */
-    
     while (true)
     {
         {
-            /*
-             * As far as I know this used for thread management
-             * this thread will wait until global variable active
-             * if you have any idea feel free to comment about this
-             */
             std::unique_lock<std::mutex> lk(g_server->mtx);
             g_server->cv.wait(lk, [] { return gt::is_spam_active; });
-            /*
-             * [UPDATE] - I have no idea about it this will be TODO in the future
-             */
         }
         if (gt::is_spam_active && g_server->m_world.connected && gt::safety_spam == 0 && !gt::is_admin_entered)
         {
@@ -591,6 +573,7 @@ void events::send::OnSendTileChangeRequestPacket()
     float *y       = &g_server->lastPos.m_y;
     bool isBreak   = true;
     gameupdatepacket_t packet{};
+    packet.m_type = PACKET_TILE_CHANGE_REQUEST;
     
     while (true)
     {
@@ -609,8 +592,6 @@ void events::send::OnSendTileChangeRequestPacket()
                 isBreak = false;
             }
             
-            packet = {};
-            packet.m_type = PACKET_TILE_CHANGE_REQUEST;
             packet.m_vec_x = *x;
             packet.m_vec_y = *y;
             packet.m_state1 = (int)(*x / 32) - 3;
@@ -626,14 +607,16 @@ void events::send::OnSendTileChangeRequestPacket()
             }
             
             if (gt::is_auto_place_active && g_server->playerInventory.getTotalCurrentBlock() <= 0) {
-                this_thread::sleep_for(chrono::milliseconds(300)); // We need to put delay here to make sure all block has placed!
+                this_thread::sleep_for(chrono::milliseconds(500)); // We need to put delay here to make sure all block was breaked!
                 packet.m_state1 = ((int)(*x / 32) - 2) + g_server->donationBoxPosition;
                 packet.m_state2 = (int)ceil(*y / 32) - 2;
                 packet.m_int_data = 32;
-                g_server->send(NET_MESSAGE_GAME_PACKET, (uint8_t*)&packet, sizeof(packet));
+                if (g_server->playerInventory.getTotalCurrentBlock() <= 0)
+                    g_server->send(NET_MESSAGE_GAME_PACKET, (uint8_t*)&packet, sizeof(packet));
             }
         } else {
             this_thread::sleep_for(chrono::seconds(3));
         }
     }
 }
+

@@ -10,7 +10,7 @@ namespace events
     namespace send
         {
         bool VariantList(gameupdatepacket_t *packet);
-        bool OnPingReply(gameupdatepacket_t *packet);
+        bool OnSendPing(gameupdatepacket_t *packet);
         bool OnGenericText(string packet);
         bool OnGameMessage(string packet);
         bool OnState(gameupdatepacket_t *packet);

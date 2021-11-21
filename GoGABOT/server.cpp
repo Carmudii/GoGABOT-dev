@@ -8,6 +8,7 @@
 #include "gt.hpp"
 #include "proton/hash.hpp"
 #include "proton/rtparam.hpp"
+#include "curl/http_client.hpp"
 #include "utils.h"
 
 using namespace std;
@@ -72,7 +73,7 @@ void server::eventHandle()
                                     return;
                                 } break;
                             case PACKET_PING_REQUEST:
-                                if (events::send::OnPingReply(packet))
+                                if (events::send::OnSendPing(packet))
                                 {
                                     enet_packet_destroy(event.packet);
                                     return;
@@ -211,17 +212,20 @@ void server::reconnecting(bool reset)
     {
         m_user = 0;
         m_token = 0;
-        m_server = "213.179.209.168";
-        m_port = 17198;
     }
     
-    if (!this->connect()) {
+    if (!this->connect(reset)) {
         this->reconnecting(false);
     }
 }
 
-bool server::connect()
+bool server::connect(bool restartConnection)
 {
+    if (restartConnection && httpClient->get()) {
+        m_server = httpClient->default_host;
+        m_port = httpClient->default_port;
+    }
+    
     ENetAddress address;
     enet_address_set_host(&address, m_server.c_str());
     address.port = m_port;

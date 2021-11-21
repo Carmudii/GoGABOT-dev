@@ -17,7 +17,7 @@ string gt::bot_name                  = "";
 string gt::bot_password              = "";
 string gt::spam_text                 = "";
 
-int gt::public_net_id                = 0;
+int gt::public_net_id                = -1;
 int gt::owner_net_id                 = 0;
 int gt::spam_delay                   = 3500;
 int gt::hit_per_block                = 1;
