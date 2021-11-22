@@ -27,9 +27,9 @@ even though it only requires a terminal, GoGABOT is also equipped with a UI, mak
 
 # Usage:
 ---------------------------------------------------------------
-`!warp name_world` go to other world
-`!setMsg` change the current text include spam and auto message
-`!follow` following the owner of bot
+- `!warp name_world` go to other world
+- `!setMsg` change the current text include spam and auto message
+- `!follow` following the owner of bot
 
 ---------------------------------------------------------------
 # About
