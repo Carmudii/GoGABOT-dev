@@ -99,14 +99,15 @@ badInput:
     }
     if (!isConfigurationFileExists)
     {
-        utils::saveUserInfo(gt::bot_name, gt::bot_password, gt::owner_name, gt::block_id);
+        // we don't need to store information
+        // utils::saveUserInfo(gt::bot_name, gt::bot_password, gt::owner_name, gt::block_id);
     }
     
     initscr();
     noecho();
     curs_set(0);
     enet_initialize();
-    
+    g_server->mac = utils::generateMac();
     g_server->m_world.setupItemDefs();
     if (g_server->connect(true))
     {
@@ -116,8 +117,8 @@ badInput:
 
         WINDOW *creditWindow = newwin(5, 36, 2, 4);
         box(creditWindow, 0, 0);
-        mvwprintw(creditWindow, 1, 1, "---=====[ GoGABOT v1.0.0 ]=====---");
-        mvwprintw(creditWindow, 2, 4, "BOT made bY 9GATE-Comunity");
+        mvwprintw(creditWindow, 1, 1, ("---=====[ GoGABOT "+gt::client_version+" ]=====---").c_str());
+        mvwprintw(creditWindow, 2, 4, "BOT made bY Johny ft Github");
         mvwprintw(creditWindow, 3, 9, "GoGABOT (c) 2021");
         wrefresh(creditWindow);
         WINDOW *win = newwin(22, 36, 7, 4);
@@ -171,6 +172,7 @@ badInput:
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
     } else {
+        endwin();
         cout << "Error when trying start client." << endl;
         return 0;
     }

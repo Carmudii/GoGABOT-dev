@@ -22,6 +22,9 @@
 		FA8454AE26F208370065D238 /* win32.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83356826CA235500DE58D2 /* win32.c */; };
 		FA8454B126F208570065D238 /* sandbird.c in Sources */ = {isa = PBXBuildFile; fileRef = FA83357226CA237900DE58D2 /* sandbird.c */; };
 		FA8454B526F209080065D238 /* menu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAEAFD2D26E3731B003DACB2 /* menu.cpp */; };
+		FAB593C2274B41DA000AA1A6 /* libcurl.3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FAB593BF274B4164000AA1A6 /* libcurl.3.tbd */; };
+		FAB593C3274B41DA000AA1A6 /* libcurl.4.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FAB593C1274B4164000AA1A6 /* libcurl.4.tbd */; };
+		FAB593C4274B41DA000AA1A6 /* libcurl.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FAB593C0274B4164000AA1A6 /* libcurl.tbd */; };
 		FAEAFD3426E37777003DACB2 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA83353B26CA1BEC00DE58D2 /* main.cpp */; };
 		FAEAFD3526E37777003DACB2 /* events.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA83354926CA1CB200DE58D2 /* events.cpp */; };
 		FAEAFD3626E37777003DACB2 /* gt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA83354526CA1CB200DE58D2 /* gt.cpp */; };
@@ -81,6 +84,9 @@
 		FA83358D26CAB5A700DE58D2 /* libncurses.5.4.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.5.4.tbd; path = usr/lib/libncurses.5.4.tbd; sourceTree = SDKROOT; };
 		FA83358E26CAB5A800DE58D2 /* libncurses.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.tbd; path = usr/lib/libncurses.tbd; sourceTree = SDKROOT; };
 		FA8454AF26F208370065D238 /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; name = include; path = GoGABOT/enet/include; sourceTree = "<group>"; };
+		FAB593BF274B4164000AA1A6 /* libcurl.3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcurl.3.tbd; path = usr/lib/libcurl.3.tbd; sourceTree = SDKROOT; };
+		FAB593C0274B4164000AA1A6 /* libcurl.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcurl.tbd; path = usr/lib/libcurl.tbd; sourceTree = SDKROOT; };
+		FAB593C1274B4164000AA1A6 /* libcurl.4.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcurl.4.tbd; path = usr/lib/libcurl.4.tbd; sourceTree = SDKROOT; };
 		FACFAB0226E08EBF0088E678 /* playerInventory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = playerInventory.h; sourceTree = "<group>"; };
 		FACFAB0426E0FFA50088E678 /* playerInventory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = playerInventory.cpp; sourceTree = "<group>"; };
 		FAEAFD2D26E3731B003DACB2 /* menu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = menu.cpp; path = GoGABOT/Ui/menu.cpp; sourceTree = "<group>"; };
@@ -94,7 +100,10 @@
 			files = (
 				FA83358F26CAB5A800DE58D2 /* libncurses.5.tbd in Frameworks */,
 				FA83359026CAB5A800DE58D2 /* libncurses.5.4.tbd in Frameworks */,
+				FAB593C4274B41DA000AA1A6 /* libcurl.tbd in Frameworks */,
 				FA83359126CAB5A800DE58D2 /* libncurses.tbd in Frameworks */,
+				FAB593C3274B41DA000AA1A6 /* libcurl.4.tbd in Frameworks */,
+				FAB593C2274B41DA000AA1A6 /* libcurl.3.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,6 +169,9 @@
 		FA83355F26CA231600DE58D2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FAB593BF274B4164000AA1A6 /* libcurl.3.tbd */,
+				FAB593C1274B4164000AA1A6 /* libcurl.4.tbd */,
+				FAB593C0274B4164000AA1A6 /* libcurl.tbd */,
 				FA8454AF26F208370065D238 /* include */,
 				FAEAFD2E26E376F0003DACB2 /* menu.c */,
 				FAEAFD2D26E3731B003DACB2 /* menu.cpp */,

@@ -42,6 +42,7 @@ public:
     
     string m_server = "";
     int m_port = 0;
+    string mac = "";
     
     int m_user = 0;
     int m_token = 0;
