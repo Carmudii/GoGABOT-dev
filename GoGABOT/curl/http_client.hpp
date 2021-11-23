@@ -26,8 +26,8 @@ private:
     static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp);
 
 public:
-    string default_host = "213.179.209.168";
-    int default_port = 17198;
+    string default_host = "";
+    int default_port = 0;
     bool get();
 };
 

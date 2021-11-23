@@ -17,6 +17,7 @@ namespace gt
     extern string configuration_file_name;
     extern string base_file_name;
     extern string item_defs_file_name;
+    extern string client_version;
 
     extern int public_net_id;
     extern int owner_net_id;

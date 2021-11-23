@@ -289,8 +289,7 @@ bool events::send::OnSendPing(gameupdatepacket_t *packet)
 void events::send::OnLoginRequest()
 {
     rtvar var = rtvar::parse("");
-    auto mac = utils::generateMac();
-    auto hash_str = mac + "RT";
+    auto hash_str = g_server->mac + "RT";
     var.append("tankIDName|" + gt::bot_name);
     var.append("tankIDPass|" + gt::bot_password);
     var.append("requestedName|JailBreak");
@@ -309,7 +308,7 @@ void events::send::OnLoginRequest()
     var.append("deviceVersion|0");
     var.append("country|" + gt::flag);
     var.append("hash|" + to_string(utils::random(INT_MIN, INT_MAX)));
-    var.append("mac|" + mac);
+    var.append("mac|" + g_server->mac);
     var.append("wk|" + utils::generateRid());
     
     if (g_server->m_token != 0 && g_server->m_user != 0)
