@@ -40,10 +40,12 @@ public:
     static mutex mtx;
     static condition_variable cv;
     
-    string m_server = "";
+    string m_server = "213.179.209.168";
     int m_port = 0;
-    string mac = "";
+    string mac = "a4:5e:60:b7:43:99";
     
+    int level = 0;
+    int gems = 0;
     int m_user = 0;
     int m_token = 0;
     bool inRange(float x, float y, int distanceX = 100, int distanceY = 100);

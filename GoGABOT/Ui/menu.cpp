@@ -138,8 +138,13 @@ void MenuBar::refreshStatusWindow(WindowRefreshType type)
             break;
         case TYPE_BOTTOM:
             wattron(win, A_REVERSE);
+            mvwprintw(win, 16, 1, whiteSpace.c_str());
+            mvwprintw(win, 16, 1, "[LEVEL]: %d, [GEMS]: %d", g_server->level, g_server->gems);
+            wattroff(win, A_REVERSE);
+            
+            wattron(win, A_REVERSE);
             mvwprintw(win, 20, 1, whiteSpace.c_str());
-            mvwprintw(win, 20, 1, "[%s], [BLOCK] %d, [SEED] %d",
+            mvwprintw(win, 20, 1, "[%s], [BLOCK]: %d, [SEED]: %d",
                       g_server->getServerStatus().c_str(),
                       g_server->playerInventory.getTotalCurrentBlock(),
                       g_server->playerInventory.getTotalDroppedItem());

@@ -64,7 +64,7 @@ bool events::send::VariantList(gameupdatepacket_t *packet)
                 this_thread::sleep_for(chrono::seconds(2));
                 g_server->setTargetWorld(gt::target_world_name);
             } else if(stripText.find(">>Spam detected!") != -1) {
-                gt::safety_spam = 3;
+                gt::safety_spam = 4;
             } else if (stripText.find("world bans") != -1) {
                 gt::is_exit = utils::toUpper(utils::getValueFromPattern(stripText, "world bans (.*) from")) == utils::toUpper(gt::bot_name);
             }
@@ -215,7 +215,7 @@ bool events::send::VariantList(gameupdatepacket_t *packet)
             {
                 Player ply{};
                 bool isOwner = utils::toUpper(gt::owner_name) == utils::toUpper(utils::stripMessage(name->m_value));
-
+                
                 if (isOwner) gt::owner_net_id = var.get_int("netID");
                 if (!gt::is_following_closest_player && gt::is_following_public) g_server->setTargetWorld(gt::target_world_name);
                 gt::public_net_id = var.get_int("netID");
@@ -412,6 +412,8 @@ bool events::send::OnChangeObject(gameupdatepacket_t *packet) {
            packet->m_vec_x <= (g_server->lastPos.m_x + 80))
         {
             events::send::OnSendCollectDropItem(packet->m_vec_x, packet->m_vec_y);
+            // TODO: - you need to handle increase of gems and level
+            // if (packet->m_int_data == 112) g_server->gems = 0;
             if (packet->m_int_data != gt::block_id && packet->m_int_data != gt::block_id+1 && packet->m_int_data != 112) {
                 g_server->send("action|trash\n|itemID|" + to_string(packet->m_int_data));
             }
@@ -501,22 +503,21 @@ bool events::send::OnSetTrackingPacket(string packet) {
         int itemID = var.get_int("item");
         if (gt::block_id == itemID) {
             g_server->playerInventory.setTotalInventoryBlock(var.get_int("itemamount"));
-            MenuBar::refreshStatusWindow(TYPE_BOTTOM);
         } else {
             g_server->send("action|drop\n|itemID|" + to_string(itemID));
         }
     } else if (eventName == "305_DROP") {
         if (var.get_int("Item_id") == gt::block_id + 1) {
             g_server->playerInventory.setTotalDroppedItem(0);
-            MenuBar::refreshStatusWindow(TYPE_BOTTOM);
         }
-    } else /* if (eventName == "100_MOBILE.START") {
-        int gems = var.get_int("Gems_balance");
-        int level = var.get_int("Level");
-    } else */ {
+    } else if (eventName == "100_MOBILE.START") {
+        g_server->gems = var.get_int("Gems_balance");
+        g_server->level = var.get_int("Level");
+    } else {
         // We don't need to handle all tracking packet
         events::send::OnPlayerEnterGame();
     }
+    MenuBar::refreshStatusWindow(TYPE_BOTTOM);
     return true;
 }
 
@@ -530,7 +531,7 @@ void events::send::OnSendChatPacket()
         }
         if (gt::is_spam_active && g_server->m_world.connected && gt::safety_spam == 0 && !gt::is_admin_entered)
         {
-            g_server->send("action|input\n|text|" + utils::colorStr(gt::spam_text));
+            g_server->send("action|input\n|text|" + gt::spam_text);
         }
         if(gt::safety_spam != 0) gt::safety_spam--;
         this_thread::sleep_for(chrono::milliseconds(gt::spam_delay));
@@ -543,6 +544,7 @@ void events::send::OnSendMessagePacket()
      * we need to order the player name from vector
      * and msg the player in the world every 3 seconds
      * TODO: - this function may have a bug and you need to debug this in the future
+     * TODO: - auto message this currently won't work because APP security
      */
     while (true)
     {

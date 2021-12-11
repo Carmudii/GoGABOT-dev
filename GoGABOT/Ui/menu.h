@@ -84,6 +84,7 @@ public:
             this->menus[i].start_y = i + 1;
         }
     }
+    
     static void refreshStatusWindow(WindowRefreshType type);
     static WINDOW *win;
     
