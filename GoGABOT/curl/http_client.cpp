@@ -25,6 +25,7 @@ bool HttpClient::get()
     curl = curl_easy_init();
     if(curl) {
         curl_easy_setopt(curl, CURLOPT_URL, "http://growtopia1.com/growtopia/server_data.php");
+        curl_easy_setopt(curl, CURLOPT_USERAGENT, userAgent.c_str());
         curl_easy_setopt(curl, CURLOPT_POST, 1);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postField.c_str());
@@ -34,8 +35,11 @@ bool HttpClient::get()
             curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
             if (response_code == 200) {
                 rtvar var = rtvar::parse(readBuffer);
+                meta = var.find("meta")->m_value;
                 default_host = var.find("server")->m_value;
                 default_port = var.get_int("port");
+                PRINTD("SUCCESS GETTING IP %s\n", var.find("server")->m_value.c_str());
+                PRINTD("SUCCESS GETTING PORT %d\n", var.get_int("port"));
                 curl_easy_cleanup(curl);
                 return true;
             }

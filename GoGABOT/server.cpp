@@ -114,7 +114,10 @@ void server::eventHandle()
                                 }
                             } break;
                             case PACKET_APP_INTEGRITY_FAIL:
-                                if (gt::in_game) return;
+                                if (gt::in_game) {
+                                    enet_packet_destroy(event.packet);
+                                    return;
+                                }
                                 break;
                             default:
                                 break;
@@ -224,6 +227,7 @@ bool server::connect(bool restartConnection)
     if (restartConnection && httpClient->get()) {
         m_server = httpClient->default_host;
         m_port = httpClient->default_port;
+        meta = httpClient->meta;
     }
     
     ENetAddress address;

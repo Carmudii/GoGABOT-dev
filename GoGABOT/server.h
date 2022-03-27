@@ -40,14 +40,19 @@ public:
     static mutex mtx;
     static condition_variable cv;
     
+    string meta = "ubisoft.com";
     string m_server = "213.179.209.168";
-    int m_port = 0;
     string mac = "a4:5e:60:b7:43:99";
-    
+    string m_doorID = "";
+    string getServerStatus();
+
+    int m_port = 0;
     int level = 0;
     int gems = 0;
     int m_user = 0;
     int m_token = 0;
+    int donationBoxPosition = 0;
+    
     bool inRange(float x, float y, int distanceX = 100, int distanceY = 100);
     bool connect(bool restartConnection = false);
     void quit();
@@ -59,12 +64,9 @@ public:
     void setTargetWorld(string worldName);
     void reconnecting(bool reset);
         
-    string m_doorID = "";
-    string getServerStatus();
     World m_world;
     PlayerInventory playerInventory;
     vector2_t lastPos{};
-    int donationBoxPosition = 0;
 };
 
 extern server *g_server;
