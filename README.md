@@ -4,8 +4,17 @@ The advantage of GoGABOT is that it does not require additional applications. it
 even though it only requires a terminal, GoGABOT is also equipped with a UI, making it easier for you to make settings on the bot.
 
 # system requirements:
-- ubuntu > 2.04
-- android phone > 5.0
+### VPS:
+- ubuntu > 20.04
+- Manjaro > 21.2.1
+
+### Phone:
+- android > 5.0
+
+# step by step:
+1. install `libncursesw5-dev`
+2. install `libcurl4-gnutls-dev` 
+3. run `./GoGABOT`
 
 # Features:
 ---------------------------------------------------------------
