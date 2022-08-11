@@ -14,7 +14,7 @@ even though it only requires a terminal, GoGABOT is also equipped with a UI, mak
 # step by step:
 1. install `libncursesw5-dev`
 2. install `libcurl4-gnutls-dev` 
-3. run `./GoGABOT`
+3. run `./build.sh`
 
 # Features:
 ---------------------------------------------------------------
