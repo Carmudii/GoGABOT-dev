@@ -181,11 +181,14 @@ void server::redirect_server(variantlist_t &varlist)
     m_port = varlist[1].get_uint32();
     m_user = varlist[3].get_uint32();
     auto str = varlist[4].get_string();
+    rtvar var = rtvar::parse(str);
     if (varlist[2].get_uint32() != -1)
     {
         m_token = varlist[2].get_uint32();
     }
     
+    PRINTS("%s TOKEN : ", var.find("UUIDToken")->m_value.c_str());
+
     auto doorid = str.substr(str.find("|"));
     m_server = str.erase(str.find("|")); //remove | and doorid from end
     
