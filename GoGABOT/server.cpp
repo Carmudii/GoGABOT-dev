@@ -186,12 +186,12 @@ void server::redirect_server(variantlist_t &varlist)
     {
         m_token = varlist[2].get_uint32();
     }
-    
-    PRINTS("%s TOKEN : ", var.find("UUIDToken")->m_value.c_str());
 
-    auto doorid = str.substr(str.find("|"));
-    m_server = str.erase(str.find("|")); //remove | and doorid from end
-    
+    vector<string> dataServer = utils::split(str, "|");
+    m_server = dataServer[0];
+    m_doorID = dataServer[1];
+    m_uuid_token = dataServer[2];
+
     gt::connecting = true;
     this->reconnecting(false);
 }

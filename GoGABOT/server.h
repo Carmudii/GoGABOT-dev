@@ -44,6 +44,7 @@ public:
     string m_server = "213.179.209.168";
     string mac = "a4:5e:60:b7:43:99";
     string m_doorID = "";
+    string m_uuid_token = "";
     string getServerStatus();
 
     int m_port = 0;

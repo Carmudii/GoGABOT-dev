@@ -9,7 +9,7 @@ using namespace std;
 string gt::configuration_file_name   = ".config.bin";
 string gt::base_file_name            = "./include/base.txt";
 string gt::item_defs_file_name       = "./include/item_defs.txt";
-string gt::version                   = "3.99";
+string gt::version                   = "4.01";
 string gt::client_version            = "1.3.0";
 string gt::flag                      = "ch";
 string gt::target_world_name         = "";

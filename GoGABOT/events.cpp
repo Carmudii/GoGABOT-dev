@@ -315,15 +315,10 @@ void events::send::OnLoginRequest()
     {
         var.append("user|" + to_string(g_server->m_user));
         var.append("token|" + to_string(g_server->m_token));
-        /*
-         *
-         * we will need used it in the future to handle a redirect subserver when player using a doorID
-         * if(!g_server->m_doorID.empty()) var.append("doorID|" + g_server->m_doorID);
-         *
-         * var.append("doorID|ee");
-         */
+        var.append("UUIDToken|" + g_server->m_uuid_token);
+        var.append("doorID|" + g_server->m_doorID);
     }
-    
+
     string packet = var.serialize();
     gt::in_game = false;
     g_server->send(packet);
