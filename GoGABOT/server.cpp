@@ -171,7 +171,23 @@ bool server::start_client()
     if (code != 0) {
         server_status = SERVER_FAILED;
     }
-        
+
+    config.address.port = 1080;
+
+    const char *proxy_host_ip = "127.0.0.1";
+    if (enet_address_set_host_ip(&config.address, proxy_host_ip)) {
+        fprintf(stderr, "Can't bind address to %s\n", proxy_host_ip);
+        return EXIT_FAILURE;
+    }
+
+        strcpy(config.username, "");
+        strcpy(config.password, "");
+
+    if (enet_host_use_socks5(m_server_host, &config)) {
+        fprintf(stderr, "Can't bind host to socks5\n");
+        return EXIT_FAILURE;
+    }
+
     enet_host_flush(m_server_host);
     return true;
 }
@@ -234,22 +250,6 @@ bool server::connect(bool restartConnection)
         meta = httpClient->meta;
     }
 
-    config.address.port = 1080;
-
-    const char *proxy_host_ip = "127.0.0.1";
-    if (enet_address_set_host_ip(&config.address, proxy_host_ip)) {
-        fprintf(stderr, "Can't bind address to %s\n", proxy_host_ip);
-        return EXIT_FAILURE;
-    }
-
-    strcpy(config.username, "");
-    strcpy(config.password, "");
-
-    if (enet_host_use_socks5(m_server_host, &config)) {
-        fprintf(stderr, "Can't bind host to socks5\n");
-        return EXIT_FAILURE;
-    }
-    
     ENetAddress address;
     enet_address_set_host(&address, m_server.c_str());
     address.port = m_port;
