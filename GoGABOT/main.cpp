@@ -171,12 +171,5 @@ badInput:
             g_server->eventHandle();
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
-    } else {
-         endwin();
-        cout << "Error when trying start client." << endl;
-        return 0;
     }
-    
-     endwin();
-    return 0;
 }

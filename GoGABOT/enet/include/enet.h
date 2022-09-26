@@ -1,7 +1,8 @@
-/** 
+/**
  @file  enet.h
  @brief ENet public header file
 */
+// clang-format off
 #ifndef __ENET_ENET_H__
 #define __ENET_ENET_H__
 
@@ -91,6 +92,17 @@ typedef struct _ENetAddress
    enet_uint32 host;
    enet_uint16 port;
 } ENetAddress;
+
+/**
+ * Portable SOCKS5 internet address structure. 
+*/
+typedef struct _ENetsocks5Config
+{
+   ENetAddress address;
+   char username[255];
+   char password[255];
+} ENetSocks5Config;
+
 
 /**
  * Packet flag bit constants.
@@ -363,7 +375,10 @@ typedef int (ENET_CALLBACK * ENetInterceptCallback) (struct _ENetHost * host, st
 typedef struct _ENetHost
 {
    ENetSocket           socket;
+   ENetSocket           socks5Socket;
    ENetAddress          address;                     /**< Internet address of the host */
+   ENetAddress          socks5TargetAddress;
+   ENetSocks5Config     socks5Config;               /**< Internet SOCKS5 address of the host */
    enet_uint32          incomingBandwidth;           /**< downstream bandwidth of the host */
    enet_uint32          outgoingBandwidth;           /**< upstream bandwidth of the host */
    enet_uint32          bandwidthThrottleEpoch;
@@ -388,6 +403,8 @@ typedef struct _ENetHost
    ENetAddress          receivedAddress;
    enet_uint8 *         receivedData;
    size_t               receivedDataLength;
+   enet_uint32          enableLogging;
+   enet_uint32          usingNewPacket;
    enet_uint32          totalSentData;               /**< total data sent, user should reset to 0 as needed to prevent overflow */
    enet_uint32          totalSentPackets;            /**< total UDP packets sent, user should reset to 0 as needed to prevent overflow */
    enet_uint32          totalReceivedData;           /**< total data received, user should reset to 0 as needed to prevent overflow */
@@ -398,7 +415,6 @@ typedef struct _ENetHost
    size_t               duplicatePeers;              /**< optional number of allowed peers from duplicate IPs, defaults to ENET_PROTOCOL_MAXIMUM_PEER_ID */
    size_t               maximumPacketSize;           /**< the maximum allowable packet size that may be sent or received on a peer */
    size_t               maximumWaitingData;          /**< the maximum aggregate amount of buffer space a peer may use waiting for packets to be delivered */
-   size_t               usingNewPacket;              /**< the New and Improved! */
 } ENetHost;
 
 /**
@@ -564,8 +580,10 @@ ENET_API int          enet_packet_resize  (ENetPacket *, size_t);
 ENET_API enet_uint32  enet_crc32 (const ENetBuffer *, size_t);
                 
 ENET_API ENetHost * enet_host_create (const ENetAddress *, size_t, size_t, enet_uint32, enet_uint32);
+ENET_API int        enet_host_use_socks5 (ENetHost *, ENetSocks5Config *);
+ENET_API void       enet_host_set_using_new_packet (ENetHost *, enet_uint32);
 ENET_API void       enet_host_destroy (ENetHost *);
-ENET_API ENetPeer * enet_host_connect (ENetHost *, const ENetAddress *, size_t, enet_uint32);
+ENET_API ENetPeer * enet_host_connect (ENetHost *, ENetAddress *, size_t, enet_uint32);
 ENET_API int        enet_host_check_events (ENetHost *, ENetEvent *);
 ENET_API int        enet_host_service (ENetHost *, ENetEvent *, enet_uint32);
 ENET_API void       enet_host_flush (ENetHost *);

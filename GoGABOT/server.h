@@ -25,6 +25,7 @@ enum ConnectionStatusEnum
 class server
 {
 private:
+    ENetSocks5Config config;
     ENetHost *m_server_host;
     ENetPeer *m_server_peer;
 

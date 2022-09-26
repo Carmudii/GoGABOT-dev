@@ -49,6 +49,7 @@ enet_host_create (const ENetAddress * address, size_t peerCount, size_t channelL
     memset (host -> peers, 0, peerCount * sizeof (ENetPeer));
 
     host -> socket = enet_socket_create (ENET_SOCKET_TYPE_DATAGRAM);
+    host -> socks5Socket = ENET_SOCKET_NULL;
     if (host -> socket == ENET_SOCKET_NULL || (address != NULL && enet_socket_bind (host -> socket, address) < 0))
     {
        if (host -> socket != ENET_SOCKET_NULL)
@@ -74,6 +75,8 @@ enet_host_create (const ENetAddress * address, size_t peerCount, size_t channelL
     if (channelLimit < ENET_PROTOCOL_MINIMUM_CHANNEL_COUNT)
       channelLimit = ENET_PROTOCOL_MINIMUM_CHANNEL_COUNT;
 
+    host -> usingNewPacket = 0;
+    host -> enableLogging = 0;
     host -> randomSeed = (enet_uint32) (size_t) host;
     host -> randomSeed += enet_host_random_seed ();
     host -> randomSeed = (host -> randomSeed << 16) | (host -> randomSeed >> 16);
@@ -133,6 +136,135 @@ enet_host_create (const ENetAddress * address, size_t peerCount, size_t channelL
     return host;
 }
 
+int 
+enet_host_use_socks5 (ENetHost * host, ENetSocks5Config * socks5Config)
+{
+    ENetAddress* address = & socks5Config -> address;
+    host -> socks5Socket = enet_socket_create (ENET_SOCKET_TYPE_STREAM);
+    host -> socks5Config = * socks5Config;
+
+    if (enet_socket_connect (host -> socks5Socket, address) != 0)
+      return -1;
+
+    ENetBuffer buffer;
+    ENetSocks5MethodRequest method;
+    method.version = ENET_SOCKS5_VERSION;
+    method.methodCount = 1;
+
+    if (strlen (socks5Config -> username) == 0 && strlen (socks5Config -> password) == 0)
+      method.methods [0] = ENET_SOCKS5_METHOD_NOAUTH;
+    else
+      method.methods [0] = ENET_SOCKS5_METHOD_USERPASS;
+
+    buffer.data = & method;
+    buffer.dataLength = sizeof (enet_uint8) + sizeof (enet_uint8) + sizeof (enet_uint8);
+
+    int sentLength = enet_socket_send (host -> socks5Socket, address, & buffer, 1);
+    if (sentLength <= 0)
+      return -1;
+
+    ENetSocks5MethodResponse methodResponse;
+    memset (&methodResponse, 0, sizeof (ENetSocks5MethodResponse));
+
+    buffer.data = & methodResponse;
+    buffer.dataLength = sizeof (ENetSocks5MethodResponse);
+
+    int receivedLength = enet_socket_receive (host -> socks5Socket, address, & buffer, 1);
+    if (receivedLength <= 0)
+      return -1;
+
+    if (methodResponse.version != ENET_SOCKS5_VERSION)
+      return -1;
+
+    switch (methodResponse.method) 
+    {
+        case ENET_SOCKS5_METHOD_NOAUTH:
+          break;
+
+        case ENET_SOCKS5_METHOD_USERPASS:
+        {
+            enet_uint8 usernameLength = strlen (socks5Config -> username);
+            enet_uint8 passwordLength = strlen (socks5Config -> password);
+          
+            size_t offset = 0;
+            size_t authRequestSize = sizeof (enet_uint8) + sizeof (enet_uint8) + usernameLength + sizeof (enet_uint8) + passwordLength;
+            enet_uint8 * authRequest = (enet_uint8 * ) enet_malloc(authRequestSize);
+            
+            authRequest [offset ++] = ENET_SOCKS5_AUTH_VERSION;
+            authRequest [offset ++] = usernameLength;
+            memcpy (authRequest + offset, socks5Config -> username, usernameLength);
+            offset += usernameLength;
+
+            authRequest [offset ++] = passwordLength;
+            memcpy(authRequest + offset, socks5Config -> password, passwordLength);
+            offset += passwordLength;
+
+            buffer.data = authRequest;
+            buffer.dataLength = authRequestSize;
+
+            sentLength = enet_socket_send (host -> socks5Socket, address, & buffer, 1);
+            enet_free (authRequest);
+            if (sentLength <= 0)
+              return -1;
+
+            ENetSocks5AuthResponse authResponse;
+            buffer.data = & authResponse;
+            buffer.dataLength = sizeof (ENetSocks5AuthResponse);
+
+            receivedLength = enet_socket_receive (host -> socks5Socket, address, & buffer, 1);
+            if (receivedLength <= 0)
+              return -1;
+
+            if (authResponse.version != ENET_SOCKS5_AUTH_VERSION)
+              return -1;
+
+            if (authResponse.status != ENET_SOCKS5_AUTH_SUCCESS)
+              return -1;
+
+            break;
+        }
+
+        default:
+          return -1;
+    }
+
+    ENetSocks5Connection connection;
+    connection.version = ENET_SOCKS5_VERSION;
+    connection.command = ENET_SOCKS5_COMMAND_UDP_ASSOCIATE;
+    connection.reserved = 0;
+    connection.addressType = ENET_SOCKS5_ADDRESS_IPV4;
+    connection.addressHost = 0;
+    connection.addressPort = 0;
+
+    buffer.data = & connection;
+    buffer.dataLength = sizeof (ENetSocks5Connection);
+
+    sentLength = enet_socket_send (host -> socks5Socket, address, & buffer, 1);
+    if (sentLength <= 0)
+      return -1;
+
+    receivedLength = enet_socket_receive (host -> socks5Socket, address, & buffer, 1);
+    if (receivedLength <= 0)
+      return -1;
+
+    if (connection.version != ENET_SOCKS5_VERSION)
+      return -1;
+
+    if (connection.status != ENET_SOCKS5_REPLY_SUCCEED)
+      return -1;
+
+    if (connection.addressType != ENET_SOCKS5_ADDRESS_IPV4)
+      return -1;
+
+    return 0;
+}
+
+void
+enet_host_set_using_new_packet (ENetHost * host, enet_uint32 usingNewPacket)
+{
+    host -> usingNewPacket = usingNewPacket;
+}
+
 /** Destroys the host and all resources associated with it.
     @param host pointer to the host to destroy
 */
@@ -180,7 +312,7 @@ enet_host_random (ENetHost * host)
     notifies of an ENET_EVENT_TYPE_CONNECT event for the peer.
 */
 ENetPeer *
-enet_host_connect (ENetHost * host, const ENetAddress * address, size_t channelCount, enet_uint32 data)
+enet_host_connect (ENetHost * host, ENetAddress * address, size_t channelCount, enet_uint32 data)
 {
     ENetPeer * currentPeer;
     ENetChannel * channel;
@@ -208,8 +340,15 @@ enet_host_connect (ENetHost * host, const ENetAddress * address, size_t channelC
       return NULL;
     currentPeer -> channelCount = channelCount;
     currentPeer -> state = ENET_PEER_STATE_CONNECTING;
-    currentPeer -> address = * address;
     currentPeer -> connectID = enet_host_random (host);
+
+    if (host -> socks5Socket != ENET_SOCKET_NULL)
+    {
+        currentPeer -> address = host -> socks5Config.address;
+        host -> socks5TargetAddress = * address;
+    }
+    else
+      currentPeer -> address = * address;
 
     if (host -> outgoingBandwidth == 0)
       currentPeer -> windowSize = ENET_PROTOCOL_MAXIMUM_WINDOW_SIZE;

@@ -201,6 +201,7 @@ void server::reconnecting(bool reset)
     gt::is_admin_entered    = false;
     gt::connecting          = false;
     server_status           = SERVER_DISCONNECT;
+
     MenuBar::refreshStatusWindow(TYPE_BOTTOM);
     this->m_world.connected = false;
     this->m_world.local = {};
@@ -231,6 +232,22 @@ bool server::connect(bool restartConnection)
         m_server = httpClient->default_host;
         m_port = httpClient->default_port;
         meta = httpClient->meta;
+    }
+
+    config.address.port = 1080;
+
+    const char *proxy_host_ip = "127.0.0.1";
+    if (enet_address_set_host_ip(&config.address, proxy_host_ip)) {
+        fprintf(stderr, "Can't bind address to %s\n", proxy_host_ip);
+        return EXIT_FAILURE;
+    }
+
+    strcpy(config.username, "");
+    strcpy(config.password, "");
+
+    if (enet_host_use_socks5(m_server_host, &config)) {
+        fprintf(stderr, "Can't bind host to socks5\n");
+        return EXIT_FAILURE;
     }
     
     ENetAddress address;
