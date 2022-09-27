@@ -31,7 +31,9 @@ bool events::send::VariantList(gameupdatepacket_t *packet)
     {
         case fnv32("onShowCaptcha"):
         {
-            gt::solve_captcha(varlist[1].get_string());
+
+            // TODO: - need to improve
+            // gt::solve_captcha(varlist[1].get_string());
             return true;
         }
             break;
